@@ -56,8 +56,10 @@ const Login = () => {
     }
   };
 
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center  p-4">
+    <div className="min-h-screen pt-28 flex items-center justify-center  p-4">
       <div className="w-1/2 border border-gray-400 rounded-2xl p-8">
         <h2 className="text-3xl font-bold text-center mb-6">
           {isLoginForm ? "Welcome Back!" : "Create an Account"}

@@ -15,7 +15,6 @@ const EditProfile = () => {
     const [email, setEmail] = useState("");
     const [phoneNo, setPhoneNo] = useState("");
     const [photoUrl, setPhotoUrl] = useState("");
-    const [error, setError] = useState("");
 
     useEffect(() => {
         if (user) {
@@ -45,7 +44,6 @@ const EditProfile = () => {
 
 
     const saveProfile = async () => {
-        setError("");
         try {
             const res = await axios.patch(
                 BASE_URL + "/api/profile/edit",
@@ -60,12 +58,9 @@ const EditProfile = () => {
         }
     };
 
-    if (!user) {
-        return <div className="text-center p-8 text-lg">Loading...</div>;
-    }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="min-h-screen pt-30 flex items-center justify-center p-4">
             <div className="w-1/2 border border-gray-400 rounded-2xl p-8">
 
                 {/* Centered Heading */}
