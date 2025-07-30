@@ -1,18 +1,16 @@
-import mongoose from 'mongoose';
-import validator from 'validator';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import { getNames } from 'country-list';
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import validator from "validator";
+import parsePhoneNumberFromString from "libphonenumber-js";
+import jwt from "jsonwebtoken";
 
-const userSchema = new Schema({
+const adminSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, "Please enter your name"],
         trim: true,
-        minlength: 1,
-        maxlength: 50,
+        maxlength: [50, "Name cannot exceed 50 characters"],
+        minlength: [3, "Name must be at least 3 characters long"],
     },
     photoUrl: {
         type: String,
@@ -30,6 +28,10 @@ const userSchema = new Schema({
         trim: true,
         maxlength: 50,
         lowercase: true,
+        enum : {
+            values: ['manaswirajsharma@gmail.com', 'kb2426111@gmail.com', 'mohitmittal8955@gmail.com'],
+            message: 'Not a valid email. Please use one of the predefined emails.'
+        },
         validate(value) {
             if (!validator.isEmail(value)) {
                 throw new Error('Invalid email format');
@@ -75,52 +77,9 @@ const userSchema = new Schema({
             }
         }
     },
-    gender: {
-        type: String,
-        required: true,
-        trim: true,
-        validate(value){
-            if(!['male', 'female', 'other'].includes(value.toLowerCase())){
-                throw new Error('Enter a valid gender type');
-            }
-        }
-    },
-    dob: {
-        type: Date,
-        required: true,
-        validate(value) {
-            if (!validator.isDate(value)) {
-                throw new Error('Invalid date format');
-            }
-        }
-    },
-    nationality: {
-        type: String,
-        required: true,
-        trim: true,
-        validate(value) {
-            if (!['Indian', 'Foreigner'].includes(value)) {
-                throw new Error('Invalid nationality');
-            }
-        }
-    },
-    country: {
-        type: String,
-        required: true,
-        trim: true,
-        validate(value) {
-            const validCountries = getNames();
-            if (!validCountries.includes(value)) {
-                throw new Error('Invalid country name');
-            }
-        }
-    },
-},
-    {
-        timestamps: true
-    });
+}, { timestamps: true });
 
-userSchema.methods.getJWT = async function () {
+adminSchema.methods.getJWT = async function () {
 
     const user = this;
     const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY, {
@@ -128,7 +87,7 @@ userSchema.methods.getJWT = async function () {
     })
     return token;
 };
-userSchema.methods.validatePassword = async function (PasswordInputByUser) {
+adminSchema.methods.validatePassword = async function (PasswordInputByUser) {
     const user = this;
     const isPasswordValid = await bcrypt.compare(
         PasswordInputByUser,
@@ -137,6 +96,5 @@ userSchema.methods.validatePassword = async function (PasswordInputByUser) {
     return isPasswordValid;
 };
 
-
-const User = mongoose.model('User', userSchema);
-export default User;
+const Admin = mongoose.model('Admin', adminSchema);
+export default Admin;

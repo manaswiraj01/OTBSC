@@ -2,9 +2,12 @@ import express from 'express';
 import { connectDB } from './config/database.js';
 import authRouter from './routes/auth.js';
 import profileRouter from './routes/profile.js';
+import adminRouter from './routes/admin.js';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import adminProfileRouter from './routes/adminProfile.js';
+import placeRouter from './routes/place.js';
 
 const app = express();
 dotenv.config();
@@ -21,9 +24,11 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 
-app.use('/api', authRouter);
-app.use('/api', profileRouter);
-
+app.use('/', authRouter);
+app.use('/', profileRouter);
+app.use('/admin', adminRouter);
+app.use('/admin', adminProfileRouter);
+app.use('/admin', placeRouter);
 
 connectDB()
     .then(() => {

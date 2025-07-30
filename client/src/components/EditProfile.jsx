@@ -14,7 +14,7 @@ const EditProfile = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNo, setPhoneNo] = useState("");
-    const [photoUrl, setPhotoUrl] = useState("");
+    const [photoUrl, setPhotoUrl] = useState(null);
 
     useEffect(() => {
         if (user) {
@@ -46,7 +46,7 @@ const EditProfile = () => {
     const saveProfile = async () => {
         try {
             const res = await axios.patch(
-                BASE_URL + "/api/profile/edit",
+                BASE_URL + "/profile/edit",
                 { name, email, phoneNo, photoUrl },
                 { withCredentials: true }
             );
@@ -112,7 +112,7 @@ const EditProfile = () => {
                     </div>
 
                     <div className="w-1/2 flex items-center justify-center">
-                        {photoUrl && (
+                        {user?.photoUrl && (
                             <div className="flex flex-col items-center">
                                 <img
                                     src={photoUrl}

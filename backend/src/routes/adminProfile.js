@@ -1,26 +1,26 @@
 import express from 'express'
-import { userAuth } from '../middlewares/auth.js';
+import { adminAuth } from '../middlewares/adminAuth.js';
 import { validateEditProfileData } from '../utils/validation.js';
 import cloudinary from '../utils/cloudinary.js';
 
-const profileRouter = express.Router();
+const adminProfileRouter = express.Router();
 
-profileRouter.get("/profile/view", userAuth, async (req, res) => {
+adminProfileRouter.get("/profile/view", adminAuth, async (req, res) => {
   try {
-    const user = req.user;
-    res.send(user);
+    const admin = req.admin;
+    res.send(admin);
   } catch (err) {
-    res.status(400).send("Cannot get user profile");
+    res.status(400).send("Cannot get admin profile");
   }
 })
 
-profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
+adminProfileRouter.patch("/profile/edit", adminAuth, async (req, res) => {
   try {
     if (!validateEditProfileData(req)) {
       throw new Error("Invalid Edit Request");
     }
 
-    const loggedInUser = req.user;
+    const loggedInUser = req.admin;
 
     if (req.body.photoUrl) {
       try {
@@ -30,8 +30,8 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
             { quality: "auto" },
             { fetch_format: "auto" },
           ],
-          folder: "profile_pictures",
-          public_id: `user_${loggedInUser._id}`,
+          folder: "admin/profile_pictures",
+          public_id: `admin_${loggedInUser._id}`,
           overwrite: true,
         });
         loggedInUser.photoUrl = uploadResponse.secure_url;
@@ -40,7 +40,8 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
         throw new Error("Image upload failed");
       }
     }
-    
+
+
     Object.keys(req.body).forEach((key) => {
       if (key !== 'photoUrl') {
         loggedInUser[key] = req.body[key];
@@ -49,7 +50,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     await loggedInUser.save();
 
     res.json({
-      message: "profile updated successfuly",
+      message: " admin profile updated successfuly",
       data: loggedInUser,
     });
   } catch (err) {
@@ -57,4 +58,4 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   }
 });
 
-export default profileRouter
+export default adminProfileRouter;

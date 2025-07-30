@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice.js";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants.js";
 import toast from "react-hot-toast";
+import { Context } from "../context/Context.jsx";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("");
@@ -21,18 +22,20 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { fetchUser } = useContext(Context);
 
   const handleLogin = async () => {
- 
+
     try {
 
       const res = await axios.post(
-        BASE_URL + "/api/login",
-        { email : emailId, password },
+        BASE_URL + "/login",
+        { email: emailId, password },
         { withCredentials: true }
       );
       dispatch(addUser(res.data));
       toast.success(res?.data?.message);
+      fetchUser();
       return navigate("/");
     } catch (err) {
       toast.error(err.message);
@@ -40,17 +43,17 @@ const Login = () => {
   };
 
   const handleSignUp = async () => {
-  
+
     try {
       setError("")
       const res = await axios.post(
-        BASE_URL + "/api/signup",
-        { name, email : emailId, password, phoneNo : countryCode + number, countryCode, gender, dob, nationality, country },
+        BASE_URL + "/signup",
+        { name, email: emailId, password, phoneNo: countryCode + number, countryCode, gender, dob, nationality, country },
         { withCredentials: true }
       );
       dispatch(addUser(res.data.data));
       toast.success(res?.data?.message);
-      return navigate("/");
+      return navigate("/profile");
     } catch (err) {
       toast.error(err.message);
     }
