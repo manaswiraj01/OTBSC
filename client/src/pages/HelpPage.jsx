@@ -1,308 +1,308 @@
 import React, { useState } from 'react';
 
-const HelpPage = () => {
+const HelpPage = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
-    mobileNo: '',
+    mobileNumber: '',
+    fullName: '',
     emailId: '',
+    bookingId: '',
     issueType: '',
     subIssueType: '',
-    description: '',
-    fullName: '',
-    bookingId: '',
     issueTitle: '',
+    description: '',
     attachment: null
   });
-
-  const [showAlert, setShowAlert] = useState(false);
 
   const issueTypes = [
     'Booking Issues',
     'Payment Problems',
     'Technical Support',
-    'Service Quality',
-    'Cancellation/Refund',
-    'Other'
+    'Cancellation',
+    'Refund Request',
+    'General Inquiry'
   ];
 
   const subIssueTypes = {
-    'Booking Issues': ['Room not available', 'Booking confirmation', 'Modification request', 'Double booking'],
-    'Payment Problems': ['Payment failed', 'Refund delay', 'Wrong amount charged', 'Payment gateway error'],
-    'Technical Support': ['Website not loading', 'Login issues', 'App crashes', 'Feature not working'],
-    'Service Quality': ['Poor service', 'Cleanliness issues', 'Staff behavior', 'Amenities problem'],
-    'Cancellation/Refund': ['Cancellation policy', 'Refund status', 'Partial refund', 'Processing delay'],
-    'Other': ['General inquiry', 'Feedback', 'Suggestion', 'Complaint']
+    'Booking Issues': ['Cannot make booking', 'Booking confirmation not received', 'Booking modification'],
+    'Payment Problems': ['Payment failed', 'Double charge', 'Payment gateway error'],
+    'Technical Support': ['Website not loading', 'Form not submitting', 'Login issues'],
+    'Cancellation': ['Cancel booking', 'Partial cancellation', 'Emergency cancellation'],
+    'Refund Request': ['Full refund', 'Partial refund', 'Refund status'],
+    'General Inquiry': ['Tourist information', 'Package details', 'Contact information']
   };
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (name === 'attachment') {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    if (name === 'issueType') {
       setFormData(prev => ({
         ...prev,
-        [name]: files[0] || null
-      }));
-    } else if (name === 'issueType') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
         subIssueType: ''
       }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
     }
+  };
+
+  const handleFileChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      attachment: e.target.files[0]
+    }));
   };
 
   const handleSubmit = () => {
-    const requiredFields = ['mobileNo', 'issueType', 'subIssueType', 'fullName', 'issueTitle'];
-    const missingFields = requiredFields.filter(field => !formData[field]);
-
-    if (missingFields.length > 0) {
-      alert('Please fill in all required fields marked with *');
+    if (!formData.mobileNumber || !formData.fullName || !formData.emailId || 
+        !formData.issueType || !formData.subIssueType || !formData.issueTitle || !formData.description) {
+      alert('Please fill in all required fields');
       return;
     }
-
-    if (!/^\d{10}$/.test(formData.mobileNo)) {
-      alert('Please enter a valid 10-digit mobile number');
-      return;
-    }
-
-    setShowAlert(true);
-
-    setFormData({
-      mobileNo: '',
-      emailId: '',
-      issueType: '',
-      subIssueType: '',
-      description: '',
-      fullName: '',
-      bookingId: '',
-      issueTitle: '',
-      attachment: null
-    });
-
-    setTimeout(() => setShowAlert(false), 4000);
+    
+    console.log('Form Data Submitted:', formData);
+    alert('Help request submitted successfully!');
+    if (onClose) onClose();
   };
 
-  return (<div  >
-    <div className="min-h-screen bg-base-200 pt-15">
-
-      {/* Alert */}
-      {showAlert && (
-
-        <div className="px-6 pt-6 " >
-          <div className="alert alert-success shadow-lg">
-            <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <h3 className="font-bold">Success!</h3>
-              <div className="text-xs">Your support request has been submitted successfully. We'll get back to you soon!</div>
-            </div>
+  return (
+    <div data-theme="daisy" className="min-h-screen bg-base-200 p-4 flex items-center justify-center">
+      <style jsx>{`
+        /* DaisyUI Daisy Theme Override */
+        [data-theme="daisy"] {
+          --primary: #661ae6;
+          --primary-content: #ffffff;
+          --secondary: #d926a9;
+          --secondary-content: #ffffff;
+          --accent: #1fb2a6;
+          --accent-content: #ffffff;
+          --neutral: #2a323c;
+          --neutral-content: #a6adbb;
+          --base-100: #ffffff;
+          --base-200: #f2f2f2;
+          --base-300: #e5e6e6;
+          --base-content: #1f2937;
+          --info: #3abff8;
+          --success: #36d399;
+          --warning: #fbbd23;
+          --error: #f87272;
+        }
+      `}</style>
+      
+      <div className="card w-200 max-w-4xl mt-20 border border-gray-400 bg-base-100 rounded-2xl">
+        <div className="card-body p-8">
+          {/* Header */}
+          <div className="flex justify-center items-center mb-6">
+            <h1 className="text-3xl font-semibold text-base-content">Welcome Guest</h1>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="btn btn-ghost btn-sm btn-circle text-xl hover:bg-base-200"
+              >
+                ✕
+              </button>
+            )}
           </div>
-        </div>
-      )}
 
-      {/* Main Content */}
-      <div className="p-6" style={{ paddingLeft: '400px', paddingRight: '400px', backgroundColor: 'transparent' }}>
-        {/* Header Section */}
-        <div className="bg-base-100 rounded-lg shadow-lg p-8 mb-6 ">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-base-content mb-2">Welcome Guest</h1>
-            <p className="text-base-content opacity-70 text-lg">Please fill out the form below to submit your support request</p>
-            <div className="divider"></div>
-          </div>
-        </div>
-
-        {/* Form Section */}
-        <div className="bg-base-100 rounded-lg shadow-lg p-8">
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Left Column */}
-            <div className="space-y-6">
-              {/* Mobile Number */}
-              <div className="form-control w-full">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content">Mobile No <span className="text-error">*</span></span>
-                </label>
-                <input
-                  type="tel"
-                  name="mobileNo"
-                  value={formData.mobileNo}
-                  onChange={handleChange}
-                  placeholder="Enter 10-digit mobile number"
-                  className="input input-bordered input-primary w-full"
-                  maxLength="10"
-                />
+          {/* Form Fields */}
+          <div className="space-y-6 pl-4.5 pt-4.5">
+            {/* Row 1: Mobile No & Full Name */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">
+                    Mobile No<span className="text-error ml-1">*</span>
+                  </span>
+                </label><br />
+                <div className="join h-12">
+                  <div className="bg-base-200 px-4 flex items-center justify-center rounded-l-lg border border-base-300 border-r-0 min-w-[60px]">
+                    <span className="text-base-content/60 text-sm">+91</span>
+                  </div>
+                  <input
+                    type="tel"
+                    name="mobileNumber"
+                    value={formData.mobileNumber}
+                    onChange={handleInputChange}
+                    className="input input-bordered flex-1 h-12 w-65 bg-base-200 border-l-0 rounded-l-none focus:outline-none focus:border-primary"
+                    placeholder=""
+                  />
+                </div>
               </div>
 
-              {/* Email ID */}
-              <div className="form-control w-full">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content">Email ID</span>
-                </label>
-                <input
-                  type="email"
-                  name="emailId"
-                  value={formData.emailId}
-                  onChange={handleChange}
-                  placeholder="Enter your email address"
-                  className="input input-bordered input-primary w-full"
-                />
-              </div>
-
-              {/* Issue Type */}
-              <div className="form-control w-full">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content">Issue Type <span className="text-error">*</span></span>
-                </label>
-                <select
-                  name="issueType"
-                  value={formData.issueType}
-                  onChange={handleChange}
-                  className="select select-bordered select-primary w-full"
-                >
-                  <option value="">Select issue type</option>
-                  {issueTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-
-
-
-              {/* Full Name */}
-              <div className="form-control w-full">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content">Full Name <span className="text-error">*</span></span>
-                </label>
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">
+                    Full Name<span className="text-error ml-1">*</span>
+                  </span>
+                </label><br />
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
-                  onChange={handleChange}
-                  placeholder="Enter your full name"
-                  className="input input-bordered input-primary w-full"
+                  onChange={handleInputChange}
+                  className="input input-bordered h-12 bg-base-200 text-base-content/60 focus:outline-none focus:border-primary"
+                  placeholder="Full Name"
                 />
-              </div>
-
-              {/* Description */}
-              <div className="form-control w-full">
-                <label className="label pr-1.5">
-                  <span className="label-text font-semibold text-base-content">Description</span>
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  className="textarea textarea-bordered textarea-primary h-32"
-                  placeholder="Please provide detailed information about your issue..."
-                ></textarea>
-
               </div>
             </div>
 
-            {/* Right Column */}
-            <div className="space-y-6">
-              {/* Booking ID */}
-              <div className="form-control w-full">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content">Booking ID</span>
-                </label>
+            {/* Row 2: Email ID & Booking ID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">Email ID</span>
+                </label><br />
+                <input
+                  type="email"
+                  name="emailId"
+                  value={formData.emailId}
+                  onChange={handleInputChange}
+                  className="input input-bordered h-12 bg-base-200 text-base-content/60 focus:outline-none focus:border-primary"
+                  placeholder="Enter Email ID"
+                />
+              </div>
+
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">Booking ID</span>
+                </label><br />
                 <input
                   type="text"
                   name="bookingId"
                   value={formData.bookingId}
-                  onChange={handleChange}
-                  placeholder="Enter booking ID (if applicable)"
-                  className="input input-bordered input-primary w-full"
+                  onChange={handleInputChange}
+                  className="input input-bordered h-12 bg-base-200 text-base-content/60 focus:outline-none focus:border-primary"
+                  placeholder="Enter Booking ID"
                 />
               </div>
+            </div>
 
-              {/* Issue Title */}
-              <div className="form-control w-full">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content">Issue Title <span className="text-error">*</span></span>
-                </label>
-                <input
-                  type="text"
-                  name="issueTitle"
-                  value={formData.issueTitle}
-                  onChange={handleChange}
-                  placeholder="Brief title describing your issue"
-                  className="input input-bordered input-primary w-full"
-                />
-              </div>
-              {/* Sub Issue Type */}
-              <div className="form-control w-full">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content">Sub Issue Type <span className="text-error">*</span></span>
-                </label>
+            {/* Row 3: Issue Type & Issue Title */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">
+                    Issue Type<span className="text-error ml-1">*</span>
+                  </span>
+                </label><br />
                 <select
-                  name="subIssueType"
-                  value={formData.subIssueType}
-                  onChange={handleChange}
-                  className="select select-bordered select-primary w-full"
-                  disabled={!formData.issueType}
+                  name="issueType"
+                  value={formData.issueType}
+                  onChange={handleInputChange}
+                  className="select select-bordered h-12 bg-base-200 text-base-content/60 focus:outline-none focus:border-primary"
                 >
-                  <option value="">Select sub issue type</option>
-                  {formData.issueType && subIssueTypes[formData.issueType]?.map(subType => (
-                    <option key={subType} value={subType}>{subType}</option>
+                  <option value="" className="text-base-content/60">select</option>
+                  {issueTypes.map((type) => (
+                    <option key={type} value={type} className="text-base-content">{type}</option>
                   ))}
                 </select>
               </div>
 
-
-
-
-              {/* Attachment */}
-              <div className="form-control w-full ">
-                <label className="label pb-1.5">
-                  <span className="label-text font-semibold text-base-content ">Attachment</span>
-                </label>
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">
+                    Issue Title<span className="text-error ml-1">*</span>
+                  </span>
+                </label><br />
                 <input
-                  type="file"
-                  name="attachment"
-                  onChange={handleChange}
-                  className="file-input file-input-bordered file-input-primary w-full "
-                  accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                  type="text"
+                  name="issueTitle"
+                  value={formData.issueTitle}
+                  onChange={handleInputChange}
+                  className="input input-bordered h-12 bg-base-200 text-base-content/60 focus:outline-none focus:border-primary"
+                  placeholder="Enter Title"
                 />
-                <label className="label ">
-                  <span className="label-text-alt text-base-content opacity-70">Supported formats: JPG, PNG, PDF,</span></label>
-                <label className="label">
-                  <span> DOC, DOCX (Max 10MB)</span>
-                </label>
               </div>
+            </div>
+
+            {/* Row 4: Sub Issue Type & Attachment */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">
+                    Sub Issue Type<span className="text-error ml-1">*</span>
+                  </span>
+                </label>
+                <select
+                  name="subIssueType"
+                  value={formData.subIssueType}
+                  onChange={handleInputChange}
+                  disabled={!formData.issueType}
+                  className="select select-bordered h-12 bg-base-200 text-base-content/60 focus:outline-none focus:border-primary disabled:bg-base-300 disabled:text-base-content/40"
+                >
+                  <option value="" className="text-base-content/60">select</option>
+                  {formData.issueType && subIssueTypes[formData.issueType]?.map((subType) => (
+                    <option key={subType} value={subType} className="text-base-content">{subType}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-control">
+                <label className="label pb-2">
+                  <span className="label-text font-medium text-base-content">Attachment</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="file-upload"
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="input input-bordered h-12 bg-base-200 flex items-center justify-between cursor-pointer hover:bg-base-300 transition-colors"
+                  >
+                    <span className="text-base-content/60">
+                      {formData.attachment ? formData.attachment.name : 'Attach File'}
+                    </span>
+                    <svg className="w-5 h-5 text-base-content/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                    </svg>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="form-control">
+              <label className="label pb-2">
+                <span className="label-text font-medium text-base-content">Description</span>
+              </label><br />
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                rows={4}
+                className="textarea textarea-bordered bg-base-200 text-base-content/60 resize-none focus:outline-none focus:border-primary"
+                placeholder="Description"
+              />
             </div>
           </div>
 
           {/* Submit Button */}
-          <div className="form-control mt-8">
+          <div className="form-control mt-8 flex justify-center">
             <button
               onClick={handleSubmit}
-              className="btn btn-lg w-full lg:w-auto lg:px-12 text-white bg-[oklch(65%_0.241_354.308)] hover:bg-[oklch(70%_0.241_354.308)]"
+              className="btn text-white font-semibold text-lg h-14 w-175 rounded-lg"
+              style={{
+                backgroundColor: 'oklch(65% 0.241 354.308)',
+                borderColor: '#e91e63'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#d81b60';
+                e.target.style.borderColor = '#d81b60';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#e91e63';
+                e.target.style.borderColor = '#e91e63';
+              }}
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-              Submit Support Request
+              Submit
             </button>
-          </div>
-
-
-          {/* Required Fields Notice */}
-          <div className="alert alert-info mt-6">
-            <svg className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-sm">Fields marked with <span className="text-error font-bold">*</span> are required</span>
           </div>
         </div>
       </div>
-
-    
-    </div></div>
+    </div>
   );
 };
 
