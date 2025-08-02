@@ -187,7 +187,7 @@ export default function FAQs() {
         {/* FAQ Sections */}
         <div className="grid gap-8">
           {filteredFAQs.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="card bg-base-100 shadow-xl">
+            <div key={categoryIndex} className="card bg-base-100">
               <div className="card-body">
                 {/* Category Header */}
                 <div className="flex items-center mb-6 pb-4 border-b border-base-300">
@@ -198,8 +198,8 @@ export default function FAQs() {
                 {/* Questions */}
                 <div className="space-y-3">
                   {category.questions.map((faq) => (
-                    <div key={faq.id} className="collapse collapse-arrow bg- rounded-box">
-
+                    // <div key={faq.id} className="collapse collapse-arrow border border-base-300 rounded-box">
+                    <div key={faq.id} className="collapse collapse-arrow border border-base-300 dark:border-base-content/20 rounded-box ">
                       <input type="checkbox" name={`faq-${faq.id}`} />
                       <div className="collapse-title  text-lg font-semibold">
                         {faq.question}

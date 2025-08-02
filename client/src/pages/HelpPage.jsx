@@ -12,7 +12,7 @@ const HelpPage = ({ isOpen, onClose }) => {
     description: '',
     attachment: null
   });
-
+  
   const issueTypes = [
     'Booking Issues',
     'Payment Problems',
