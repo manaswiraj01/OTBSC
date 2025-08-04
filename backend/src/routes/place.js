@@ -3,6 +3,7 @@ import { validateLocation } from '../utils/validation.js';
 import Place from '../models/palceModel.js';
 import cloudinary from '../utils/cloudinary.js';
 import { adminAuth } from '../middlewares/adminAuth.js';
+import { MAX_IMAGE_COUNT } from '../utils/contants.js';
 
 const placeRouter = express.Router();
 
@@ -117,16 +118,34 @@ placeRouter.get('/get/place/:id', adminAuth, async (req, res) => {
     }
 });
 
-placeRouter.patch('/update/place/:id', adminAuth, async (req, res)=> {
+placeRouter.patch('/update/place/:id', adminAuth, async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
 
-        const result = await validateLocation(updates.state, updates.city, updates.pincode);
-        if (!result.success) {
-            return res.status(400).json(result);
+        const { state, city, pincode } = updates;
+        const isAnyLocationFieldProvided = state || city || pincode;
+
+        if (isAnyLocationFieldProvided) {
+            if (!state || !city || !pincode) {
+                return res.status(400).json({
+                    success: false,
+                    message: "To update location, all of 'state', 'city', and 'pincode' must be provided.",
+                });
+            }
+
+            const result = validateLocation(state, city, pincode);
+            if (!result.success) {
+                return res.status(400).json(result);
+            }
         }
 
+        if (updates.photoUrls && updates.photoUrls.length > MAX_IMAGE_COUNT) {
+            return res.status(400).json({
+                success: false,
+                message: `You can upload a maximum of ${MAX_IMAGE_COUNT} images.`,
+            });
+        }
 
         if (updates.photoUrls && updates.photoUrls.length > 0) {
             const finalImageUrls = [];
@@ -137,32 +156,40 @@ placeRouter.patch('/update/place/:id', adminAuth, async (req, res)=> {
                         { quality: "auto" },
                         { fetch_format: "auto" },
                     ],
-                    folder: `places/${updates.name}/images`,
-                    public_id: `place_${updates.name}_${Date.now()}_${index}`,
+                    folder: `places`,
+                    public_id: `place_${id}_${index}`,
+                    overwrite: true,
                 });
+
                 finalImageUrls.push(uploadResponse.secure_url);
             }
             updates.photoUrls = finalImageUrls;
         }
 
-        const updatedPlace = await Place.findByIdAndUpdate(id, updates, { new: true });
+        const updatedPlace = await Place.findByIdAndUpdate(id, updates, {
+            new: true,
+            runValidators: true
+        });
+
         if (!updatedPlace) {
             return res.status(404).json({
                 success: false,
-                message: 'Place not found',
+                message: "Place not found"
             });
         }
+
         return res.status(200).json({
             success: true,
+            message: 'Place updated successfully',
             data: updatedPlace
         });
     } catch (err) {
-        console.error("Error updating place:", err.message);
-        return res.status(500).json({
+        return res.status(err.status).json({
             success: false,
-            message: 'Server error',
+            message: err.message
         });
     }
 })
+
 
 export default placeRouter;
