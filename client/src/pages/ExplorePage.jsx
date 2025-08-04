@@ -432,7 +432,7 @@ const ExplorePage = () => {
               </div>
             </div>
 
-            {/* Right - Overlapping Images */}
+            {/* Right - Overlapping Images */} 
             <div className="relative h-[500px] lg:h-[600px]">
               {/* Desert Image - Top Right */}
               <div className="absolute top-0 right-0 w-80 h-48 rounded-2xl overflow-hidden shadow-2xl z-30">

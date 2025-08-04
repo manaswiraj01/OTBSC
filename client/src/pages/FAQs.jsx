@@ -185,41 +185,52 @@ export default function FAQs() {
         </div>
 
         {/* FAQ Sections */}
-        <div className="grid gap-8">
-          {filteredFAQs.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="card bg-base-100 shadow-xl">
-              <div className="card-body">
-                {/* Category Header */}
-                <div className="flex items-center mb-6 pb-4 border-b border-base-300">
-                  <div className="text-4xl mr-4">{category.icon}</div>
-                  <h2 className="card-title  text-2xl text-primary">{category.category}</h2>
-                </div>
-                
-                {/* Questions */}
-                <div className="space-y-3">
-                  {category.questions.map((faq) => (
-                    <div key={faq.id} className="collapse collapse-arrow bg- rounded-box">
+<div className="grid gap-8">
+  {filteredFAQs.map((category, categoryIndex) => (
+    <div key={categoryIndex} className="card bg-base-100">
+      <div className="card-body">
+        {/* Category Header */}
+        <div className="flex items-center mb-6 pb-4 border-b border-base-300">
+          <div className="text-4xl mr-4">{category.icon}</div>
+          <h2 className="card-title text-2xl ">{category.category}</h2>
+        </div>
 
-                      <input type="checkbox" name={`faq-${faq.id}`} />
-                      <div className="collapse-title  text-lg font-semibold">
-                        {faq.question}
-                      </div>
-                      <div className="collapse-content">
-                        <div className="pt-2 text-base-content opacity-80">
-                          {faq.answer.split('\n').map((line, index) => (
-                            <p key={index} className={`${index > 0 ? 'mt-2' : ''} leading-relaxed`}>
-                              {line}
-                            </p>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+        {/* Questions */}
+        <div className="space-y-6">
+          {category.questions.map((faq, index) => (
+            <div key={faq.id}>
+              <div
+                className="collapse collapse-arrow border border-base-300 dark:border-base-content/20 rounded-box p-4"
+                style={{
+                  backgroundColor: 'rgb(255 1 110 / 5%)',
+                }}
+              >
+                <input type="checkbox" name={`faq-${faq.id}`} />
+                <div className="collapse-title text-lg font-semibold">
+                  {faq.question}
+                </div>
+                <div className="collapse-content">
+                  <div className="pt-2 text-base-content opacity-80">
+                    {faq.answer.split('\n').map((line, lineIndex) => (
+                      <p key={lineIndex} className={`${lineIndex > 0 ? 'mt-2' : ''} leading-relaxed`}>
+                        {line}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               </div>
+              {/* Horizontal line below each question */}
+              {index !== category.questions.length - 1 && (
+                <hr className="mt-4 border-base-300 dark:border-base-content/20" />
+              )}
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  ))}
+</div>
+
 
         {/* Contact Support Section */}
         <div className="mt-16">
@@ -287,7 +298,7 @@ export default function FAQs() {
           </div>
         </div>
 
-        {/* Quick Tips */}
+        {/* Quick Tips
         <div className="mt-16">
           <div className="alert alert-info">
             <svg className="stroke-current shrink-0 w-6 h-6" fill="none" viewBox="0 0 24 24">
@@ -300,7 +311,7 @@ export default function FAQs() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
