@@ -67,27 +67,7 @@ const HelpPage = ({ isOpen, onClose }) => {
 
   return (
     <div data-theme="daisy" className="min-h-screen bg-base-200 p-4 flex items-center justify-center">
-      <style jsx>{`
-        /* DaisyUI Daisy Theme Override */
-        [data-theme="daisy"] {
-          --primary: #661ae6;
-          --primary-content: #ffffff;
-          --secondary: #d926a9;
-          --secondary-content: #ffffff;
-          --accent: #1fb2a6;
-          --accent-content: #ffffff;
-          --neutral: #2a323c;
-          --neutral-content: #a6adbb;
-          --base-100: #ffffff;
-          --base-200: #f2f2f2;
-          --base-300: #e5e6e6;
-          --base-content: #1f2937;
-          --info: #3abff8;
-          --success: #36d399;
-          --warning: #fbbd23;
-          --error: #f87272;
-        }
-      `}</style>
+      
       
       <div className="card w-200 max-w-4xl mt-20 border border-gray-400 bg-base-100 rounded-2xl">
         <div className="card-body p-8">

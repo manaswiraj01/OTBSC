@@ -3,34 +3,8 @@ import React from 'react';
 function AboutUsPage() {
   return (
     <div data-theme="daisy" className="min-h-screen bg-base-200">
-      <style jsx>{`
-        /* DaisyUI Daisy Theme Override */
-        [data-theme="daisy"] {
-          --primary: #661ae6;
-          --primary-content: #ffffff;
-          --secondary: #d926a9;
-          --secondary-content: #ffffff;
-          --accent: #1fb2a6;
-          --accent-content: #ffffff;
-          --neutral: #2a323c;
-          --neutral-content: #a6adbb;
-          --base-100: #ffffff;
-          --base-200: #f2f2f2;
-          --base-300: #e5e6e6;
-          --base-content: #1f2937;
-          --info: #3abff8;
-          --success: #36d399;
-          --warning: #fbbd23;
-          --error: #f87272;
-        }
-      `}</style>
+    
 
-      {/* Header Section */}
-      {/* <div className="bg-base-100 shadow-xl/2">
-        <div className="container mx-auto px-6 py-8 max-w-6xl">
-          <h1 className="text-4xl font-bold text-base-content">About Us</h1>
-        </div>
-      </div> */}
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-12 max-w-6xl pt-25">

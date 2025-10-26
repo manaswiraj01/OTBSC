@@ -18,13 +18,13 @@ import { useLocation } from "react-router-dom";
 
 
 const Navbar = ({ toggleTheme, setToggleTheme }) => {
-    
+
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
-    
+
     const user = useSelector((store) => store.user);
-    
-    const location = useLocation(); 
+
+    const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -53,7 +53,10 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
 
 
     return (
-        <div className={`navbar fixed  top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-base-200 shadow-md' : 'bg-transparent'}`}>
+        <div
+            className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-base-200 shadow-md' : 'bg-base-100'
+                }`}
+        >
 
             <div className="sm:w-1/2 md:w-1/3 mx-4 lg:mx-10 xl:mx-20">
                 <img onClick={() => navigate('/')} className="w-[250px] cursor-pointer" src="https://obms-tourist.rajasthan.gov.in/_next/static/media/image.891ad7d6.png" alt="logo" />

@@ -9,7 +9,7 @@ const HomePage = () => {
     };
   }, []);
   return (
-    <div className=" w-screen h-screen mt-20 ">
+    <div data-theme="daisy" className="w-screen h-screen mt-20 ">
       
      
       <iframe
