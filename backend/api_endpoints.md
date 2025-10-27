@@ -6,11 +6,11 @@
 ## 🔐 Authentication APIs
 | Method | Endpoint       | Description                         |
 |--------|----------------|-------------------------------------|
-| POST   | /api/signup    | Register a new user                 |
-| POST   | /api/login     | Authenticate user and return token |
-| GET    | /api/profile   | Get current user profile            |
-| PUT    | /api/profile   | Update user profile                 |
-| POST   | /api/logout    | Log out user (optional)             |
+| POST   | /api/signup    | Register a new user                 |  DONE
+| POST   | /api/login     | Authenticate user and return token  |  DONE
+| GET    | /api/profile   | Get current user profile            |  DONE
+| PUT    | /api/profile   | Update user profile                 |  DONE
+| POST   | /api/logout    | Log out user (optional)             |  DONE
 
 ---
 
@@ -56,9 +56,9 @@
 ## 🗺️ Explore / Places / Events APIs
 | Method | Endpoint              | Description                          |
 |--------|-----------------------|--------------------------------------|
-| GET    | /api/explore/museum   | Get list of museum-related places    |
-| GET    | /api/explore/wildlife | Get list of wildlife attractions     |
-| GET    | /api/explore/monuments| Get monument places                  |
+| GET    | /api/explore/museum   | Get list of museum-related places    |   DONE
+| GET    | /api/explore/wildlife | Get list of wildlife attractions     |   DONE
+| GET    | /api/explore/monuments| Get monument places                  |   DONE
 | GET    | /api/events           | Get list of exhibitions/events       |
 
 ---
@@ -67,9 +67,9 @@
 | Method | Endpoint               | Description                        |
 |--------|------------------------|------------------------------------|
 | GET    | /api/admin/dashboard   | Fetch booking, revenue analytics   |
-| POST   | /api/admin/places      | Add new place                      |
-| PUT    | /api/admin/places/:id  | Update a place                     |
-| DELETE | /api/admin/places/:id  | Delete a place                     |
+| POST   | /api/admin/places      | Add new place                      |  DONE
+| PUT    | /api/admin/places/:id  | Update a place                     |  DONE
+| DELETE | /api/admin/places/:id  | Delete a place                     |  DONE
 | POST   | /api/admin/events      | Add new event                      |
 | GET    | /api/admin/bookings    | Get all user bookings              |
 | GET    | /api/admin/users       | List all registered users          |

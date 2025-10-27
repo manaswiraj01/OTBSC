@@ -1,6 +1,7 @@
 import express from "express";
 import Place from "../models/placeModel.js";
 import { adminAuth } from "../middlewares/adminAuth.js";
+import { userAuth } from "../middlewares/auth.js";
 import cloudinary from "../utils/cloudinary.js";
 import { validateLocation } from "../utils/validation.js";
 import { MAX_IMAGE_COUNT } from "../utils/constants.js";
@@ -159,5 +160,23 @@ placeRouter.delete("/delete/place/:id", adminAuth, async (req, res) => {
     res.status(500).json({ success: false, message: "Server error while deleting place" });
   }
 });
+
+placeRouter.get("/get/places/category/:category", userAuth, async (req, res) => {
+  try {
+    const { category } = req.params;
+    const validCategories = ["Museum", "Wildlife", "Monument"];
+    if (!validCategories.includes(category)) {
+      return res.status(400).json({ message: "Invalid category" });
+    }
+    const places = await Place.find({ category });
+    if (places.length === 0) {
+      return res.status(404).json({ success: false, message: "No places found for the given category" });
+    }
+    res.status(200).json({ success: true, data: places });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ success: false, message: "Server error while fetching places by category" });
+  }
+})
 
 export default placeRouter;

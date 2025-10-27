@@ -17,8 +17,8 @@ const placeSchema = new mongoose.Schema({
   category: {
     type: String,
     enum: {
-      values: ["Museum", "Wildlife", "Monument", "Planetarium"],
-      message: "Category must be one of: Museum, Wildlife, Monument, Planetarium",
+      values: ["Museum", "Wildlife", "Monument"],
+      message: "Category must be one of: Museum, Wildlife, Monument",
     },
     required: [true, "Category is required"],
   },
