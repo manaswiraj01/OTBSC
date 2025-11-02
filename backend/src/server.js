@@ -9,6 +9,7 @@ import cors from 'cors';
 import adminProfileRouter from './routes/adminProfile.js';
 import placeRouter from './routes/place.js';
 import adminAccessRouter from './routes/adminAccess.js';
+import locationRouter from './routes/locationRoutes.js';
 
 const app = express();
 dotenv.config();
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use('/', authRouter);
 app.use('/', profileRouter);
 app.use('/', placeRouter);
+app.use('/', locationRouter);
 app.use('/admin', adminRouter);
 app.use('/admin', adminProfileRouter);
 app.use('/admin', placeRouter);
