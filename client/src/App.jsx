@@ -11,6 +11,7 @@ import FAQs from './pages/FAQs';
 import ExplorePage from './pages/ExplorePage';
 import HelpPage from './pages/HelpPage';
 import { Context } from './context/Context';
+import PlaceDetails from './pages/PlaceDetails.jsx';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
           <Route path='/faqs' element={<FAQs />} />
           <Route path='/login' element={!userData ? <LoginPage /> : <Navigate to="/" />} />
           <Route path='/profile/edit' element={<ProfilePage />} />
+          <Route path='/public/get/place/:id' element={<PlaceDetails />} />
         </Route>
       </Routes>
     </div>

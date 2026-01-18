@@ -29,7 +29,7 @@ const adminSchema = new mongoose.Schema({
         maxlength: 50,
         lowercase: true,
         enum : {
-            values: ['manaswirajsharma@gmail.com', 'kb2426111@gmail.com', 'mohitmittal8955@gmail.com'],
+            values: ['manaswirajsharma1001@gmail.com', 'kb2426111@gmail.com', 'mohitmittal8955@gmail.com'],
             message: 'Not a valid email. Please use one of the predefined emails.'
         },
         validate(value) {

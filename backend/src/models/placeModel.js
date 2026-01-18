@@ -109,7 +109,21 @@ const placeSchema = new mongoose.Schema({
       min: [0, "Price must be at least 0"],
       max: [50000, "Price cannot exceed ₹50,000"],
     },
+    
   },
+  rating: {
+  average: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5
+  },
+  count: {
+    type: Number,
+    default: 0
+  }
+},
+
 }, { timestamps: true });
 
 const Place = mongoose.model("Place", placeSchema);

@@ -10,6 +10,7 @@ import adminProfileRouter from './routes/adminProfile.js';
 import placeRouter from './routes/place.js';
 import adminAccessRouter from './routes/adminAccess.js';
 import locationRouter from './routes/locationRoutes.js';
+import reviewRouter from './routes/reviewRoute.js';
 
 const app = express();
 dotenv.config();
@@ -17,7 +18,7 @@ dotenv.config();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   })
 );
@@ -30,6 +31,7 @@ app.use('/', authRouter);
 app.use('/', profileRouter);
 app.use('/', placeRouter);
 app.use('/', locationRouter);
+app.use('/', reviewRouter);
 app.use('/admin', adminRouter);
 app.use('/admin', adminProfileRouter);
 app.use('/admin', placeRouter);

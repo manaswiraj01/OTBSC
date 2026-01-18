@@ -53,7 +53,18 @@ placeRouter.post("/add/place", adminAuth, async (req, res) => {
   }
 });
 
-// GET ALL PLACES
+// PUBLIC – anyone can access
+placeRouter.get("/places", async (req, res) => {
+  try {
+    const places = await Place.find();
+
+    res.status(200).json({ success: true, data: places });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// GET ALL PLACES BY ADMIN
 placeRouter.get("/get/places", adminAuth, async (req, res) => {
   try {
     const places = await Place.find();
@@ -64,7 +75,19 @@ placeRouter.get("/get/places", adminAuth, async (req, res) => {
   }
 });
 
-// GET PLACE BY ID
+// GET PLACE BY ID FOR USERS
+placeRouter.get("/public/get/place/:id", async (req, res) => {
+  try {
+    const place = await Place.findById(req.params.id);
+    if (!place) return res.status(404).json({ success: false, message: "Place not found" });
+    res.status(200).json({ success: true, data: place });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ success: false, message: "Server error while fetching place" });
+  }
+});
+
+// GET PLACE BY ID FOR ADMIN
 placeRouter.get("/get/place/:id", adminAuth, async (req, res) => {
   try {
     const place = await Place.findById(req.params.id);
@@ -161,7 +184,7 @@ placeRouter.delete("/delete/place/:id", adminAuth, async (req, res) => {
   }
 });
 
-placeRouter.get("/get/places/category/:category", userAuth, async (req, res) => {
+placeRouter.get("/get/places/category/:category", async (req, res) => {
   try {
     const { category } = req.params;
     const validCategories = ["Museum", "Wildlife", "Monument"];
