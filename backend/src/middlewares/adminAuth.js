@@ -1,24 +1,26 @@
-import jwt from 'jsonwebtoken';
-import Admin from '../models/adminModel.js';
+import { getAuth } from "@clerk/express";
+import Admin from "../models/adminModel.js";
 
-export const adminAuth = async (req, res, next) => {
+const adminAuth = async (req, res, next) => {
   try {
-    const { token } = req.cookies;
-    if (!token) {
-      return res.status(401).send("Please Login!");
+    const { userId } = getAuth(req);
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const decodedobj =  jwt.verify(token, process.env.JWT_SECRET_KEY);
-    const { _id } = decodedobj;
-    const admin = await Admin.findById(_id);
+    const admin = await Admin.findOne({ clerkUserId: userId });
+
     if (!admin) {
-      throw new Error("Admin not found")
+      return res.status(403).json({ message: "Admin access denied" });
     }
+
     req.admin = admin;
     next();
-
   } catch (err) {
-    res.status(400).send("Error: " + err.message);
+    console.error("Admin auth error:", err);
+    res.status(500).json({ message: "Admin auth failed" });
   }
-}
+};
 
+export default adminAuth;

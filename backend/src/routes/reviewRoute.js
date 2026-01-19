@@ -27,7 +27,7 @@ reviewRouter.post("/reviews/:placeId", userAuth, async (req, res) => {
     console.log("PLACE ID:", req.params.placeId);
     console.log("BODY:", req.body);
     const review = await Review.create({
-      user: req.user.id,
+      user: req.user._id,
       place: req.params.placeId,
       rating: req.body.rating,
       comment: req.body.comment
@@ -48,21 +48,28 @@ reviewRouter.post("/reviews/:placeId", userAuth, async (req, res) => {
 });
 
 // UPDATE review
-reviewRouter.patch("/reviews/:id", userAuth, async (req, res) => {
-  const review = await Review.findById(req.params.id);
 
-  if (!review || review.user.toString() !== req.user.id) {
-    return res.status(403).json({ success: false });
+reviewRouter.patch("/reviews/:id", userAuth, async (req, res) => {
+  const { rating, comment } = req.body;
+
+  const review = await Review.findById(req.params.id);
+  if (!review) {
+    return res.status(404).json({ message: "Not found" });
   }
 
-  review.rating = req.body.rating;
-  review.comment = req.body.comment;
+  if (review.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
+
+  review.rating = rating;
+  review.comment = comment;
   await review.save();
 
   await updatePlaceRating(review.place);
 
-  res.json({ success: true, data: review });
+  res.json({ message: "Review updated", review });
 });
+
 
 // DELETE review
 reviewRouter.delete("/reviews/:id", userAuth, async (req, res) => {

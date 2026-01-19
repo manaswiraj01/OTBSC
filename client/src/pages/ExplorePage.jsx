@@ -12,20 +12,23 @@ const Explore = () => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+const [sort, setSort] = useState("latest"); // latest | top
 
-  const fetchAllPlaces = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(`${BASE_URL}/places`);
-      console.log(res?.data?.data);
-      setPlaces(res?.data?.data);
-    } catch (err) {
-      console.error(err);
-      setPlaces([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+const fetchAllPlaces = async (sort = "latest") => {
+  try {
+    setLoading(true);
+    const res = await axios.get(
+      `${BASE_URL}/places?sort=${sort}`
+    );
+    setPlaces(res?.data?.data || []);
+  } catch (err) {
+    console.error(err);
+    setPlaces([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const fetchByCategory = async (category) => {
     try {
@@ -44,8 +47,9 @@ const Explore = () => {
   };
 
   useEffect(() => {
-    fetchAllPlaces();
-  }, []);
+  fetchAllPlaces("latest");
+}, []);
+
 
   const handleFilter = (category) => {
     setPage(1);
@@ -118,21 +122,22 @@ const Explore = () => {
                 {cat}
               </button>
             ))}
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() =>
-  setPlaces((prev) =>
-    [...prev].sort(
-      (a, b) =>
-        (b.rating?.average || 0) -
-        (a.rating?.average || 0)
-    )
-  )
-}
+           <button
+  className={`btn btn-sm ${
+    sort === "top" ? "btn-primary" : "btn-outline"
+  }`}
+  onClick={() => {
+    const next =
+      sort === "top" ? "latest" : "top";
 
-            >
-              🏆 Top Rated
-            </button>
+    setSort(next);
+    setPage(1);
+    fetchAllPlaces(next);
+  }}
+>
+  🏆 Top Rated
+</button>
+
 
           </div>
         </div>

@@ -1,6 +1,6 @@
 import express from "express";
 import Place from "../models/placeModel.js";
-import { adminAuth } from "../middlewares/adminAuth.js";
+import  adminAuth  from "../middlewares/adminAuth.js";
 import { userAuth } from "../middlewares/auth.js";
 import cloudinary from "../utils/cloudinary.js";
 import { validateLocation } from "../utils/validation.js";
@@ -54,15 +54,25 @@ placeRouter.post("/add/place", adminAuth, async (req, res) => {
 });
 
 // PUBLIC – anyone can access
-placeRouter.get("/places", async (req, res) => {
-  try {
-    const places = await Place.find();
 
-    res.status(200).json({ success: true, data: places });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Server error" });
+placeRouter.get("/places", async (req, res) => {
+  const sort = req.query.sort;
+
+  let query = Place.find();
+
+  if (sort === "top") {
+    query = query.sort({
+      "rating.average": -1,
+      "rating.count": -1
+    });
+  } else {
+    query = query.sort({ createdAt: -1 });
   }
+
+  const places = await query;
+  res.json({ data: places });
 });
+
 
 // GET ALL PLACES BY ADMIN
 placeRouter.get("/get/places", adminAuth, async (req, res) => {

@@ -15,19 +15,19 @@ const PlaceCard = ({ place }) => {
       <div className="card-body">
         <h2 className="card-title flex justify-between">
           {place.name}
-          <div className="badge badge-primary badge-outline">
+          <div className="flex flex-col items-end space-y-1">
+          <div className=" flex badge badge-primary badge-outline">
             {place.category}
-            <div className="flex justify-between items-center text-sm text-gray-500">
-              <span>
-                ⭐ {place.rating?.average || 0}
-                <span className="text-xs">
-                  {" "}
-                  ({place.rating?.count || 0})
-                </span>
-              </span>
             </div>
-
+            <div className="flex flex-col justify-between items-center text-sm text-gray-500">
+             
+               <span> ⭐ {place?.rating?.average || 0} </span>
+               
+                <span>  {place?.rating?.count || 0} Reviews </span>
+             
+            </div>
           </div>
+           
         </h2>
 
         <p className="text-sm text-gray-600">

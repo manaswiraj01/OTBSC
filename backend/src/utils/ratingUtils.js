@@ -2,27 +2,38 @@ import Review from "../models/reviewModel.js";
 import Place from "../models/placeModel.js";
 
 export const updatePlaceRating = async (placeId) => {
-  const stats = await Review.aggregate([
-    { $match: { place: placeId } },
-    {
-      $group: {
-        _id: "$place",
-        avgRating: { $avg: "$rating" },
-        count: { $sum: 1 }
-      }
-    }
-  ]);
+  try {
+    const objectId = new mongoose.Types.ObjectId(placeId);
 
-  if (stats.length > 0) {
-    await Place.findByIdAndUpdate(placeId, {
-      rating: {
-        average: stats[0].avgRating.toFixed(1),
-        count: stats[0].count
+    const stats = await Review.aggregate([
+      { $match: { place: objectId } },
+      {
+        $group: {
+          _id: "$place",
+          avgRating: { $avg: "$rating" },
+          count: { $sum: 1 }
+        }
       }
-    });
-  } else {
+    ]);
+
+    const average = stats.length
+      ? Number(stats[0].avgRating.toFixed(1))
+      : 0;
+
+    const count = stats.length
+      ? stats[0].count
+      : 0;
+
     await Place.findByIdAndUpdate(placeId, {
-      rating: { average: 0, count: 0 }
+      rating: { average, count }
     });
+
+    console.log("Updated place rating:", {
+      placeId,
+      average,
+      count
+    });
+  } catch (err) {
+    console.error("updatePlaceRating error:", err);
   }
 };

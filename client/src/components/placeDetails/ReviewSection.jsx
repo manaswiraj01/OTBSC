@@ -4,6 +4,8 @@ import {BASE_URL} from "../../utils/constants.js";
 
 
 const ReviewSection = ({ placeId, user }) => {
+  const [editingId, setEditingId] = useState(null);
+
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -14,36 +16,52 @@ const ReviewSection = ({ placeId, user }) => {
     const res = await axios.get(
       `${BASE_URL}/public/reviews/${placeId}`
     );
-    setReviews(res?.data?.data);
+    setReviews(res?.data?.data || []);
   };
 
   useEffect(() => {
     fetchReviews();
   }, [placeId]);
 
-  const submitReview = async () => {
-    await axios.post(
-      `${BASE_URL}/reviews/${placeId}`,
-      { rating, comment },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      }
-    );
+ const submitReview = async () => {
+  try {
+    if (!rating || !comment.trim()) {
+      return alert("Please add rating and comment");
+    }
+
+    if (editingId) {
+      // UPDATE
+      await axios.patch(
+        `${BASE_URL}/reviews/${editingId}`,
+        { rating, comment },
+        { withCredentials: true }
+      );
+      setEditingId(null);
+    } else {
+      // CREATE
+      await axios.post(
+        `${BASE_URL}/reviews/${placeId}`,
+        { rating, comment },
+        { withCredentials: true }
+      );
+    }
+
     setRating(0);
     setComment("");
     fetchReviews();
-  };
+  } catch (err) {
+    alert(
+      err.response?.data?.message ||
+      "Something went wrong"
+    );
+  }
+};
+
 
   const deleteReview = async (id) => {
     await axios.delete(
       `${BASE_URL}/reviews/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      }
+      { withCredentials: true }
     );
     fetchReviews();
   };
@@ -55,9 +73,10 @@ const ReviewSection = ({ placeId, user }) => {
       </h2>
 
       {!isLoggedIn && (
-        <div className="alert alert-info mb-4">
-          Login to write a review
-        </div>
+       <div className="alert alert-info mb-4 inline-flex w-fit">
+  Login to write a review
+</div>
+
       )}
 
       {isLoggedIn && (
@@ -91,7 +110,8 @@ const ReviewSection = ({ placeId, user }) => {
             className="btn btn-primary btn-sm"
             onClick={submitReview}
           >
-            Submit Review
+            {editingId ? "Update Review" : "Submit Review"}
+
           </button>
         </>
       )}
@@ -107,7 +127,8 @@ const ReviewSection = ({ placeId, user }) => {
                 {"★".repeat(r.rating)}
               </span>
 
-              {user?.id === r.user?._id && (
+              {user?._id === r.user?._id && (
+                <div>
                 <button
                   className="btn btn-xs btn-error"
                   onClick={() =>
@@ -116,6 +137,18 @@ const ReviewSection = ({ placeId, user }) => {
                 >
                   Delete
                 </button>
+               <button
+  className="btn btn-xs btn-edit ml-4"
+  onClick={() => {
+    setRating(r.rating);
+    setComment(r.comment);
+    setEditingId(r._id);
+  }}
+>
+  Edit
+</button>
+
+                </div>
               )}
             </div>
 
