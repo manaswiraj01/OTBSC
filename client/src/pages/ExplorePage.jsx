@@ -109,7 +109,7 @@ const fetchAllPlaces = async (sort = "latest") => {
             }}
           />
 
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-10 flex-wrap">
             {categories.map((cat) => (
               <button
                 key={cat}

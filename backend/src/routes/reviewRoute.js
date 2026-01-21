@@ -23,9 +23,7 @@ reviewRouter.get("/public/reviews/:placeId", async (req, res) => {
 // CREATE review
 reviewRouter.post("/reviews/:placeId", userAuth, async (req, res) => {
   try {
-    console.log("USER:", req.user);
-    console.log("PLACE ID:", req.params.placeId);
-    console.log("BODY:", req.body);
+    
     const review = await Review.create({
       user: req.user._id,
       place: req.params.placeId,
@@ -33,7 +31,10 @@ reviewRouter.post("/reviews/:placeId", userAuth, async (req, res) => {
       comment: req.body.comment
     });
 
-    await updatePlaceRating(req.params.placeId);
+await updatePlaceRating(req.params.placeId);
+
+
+   
 
     res.status(201).json({ success: true, data: review });
   } catch (err) {

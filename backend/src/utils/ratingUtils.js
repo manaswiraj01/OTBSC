@@ -1,6 +1,6 @@
 import Review from "../models/reviewModel.js";
 import Place from "../models/placeModel.js";
-
+import mongoose from "mongoose";
 export const updatePlaceRating = async (placeId) => {
   try {
     const objectId = new mongoose.Types.ObjectId(placeId);
@@ -28,11 +28,7 @@ export const updatePlaceRating = async (placeId) => {
       rating: { average, count }
     });
 
-    console.log("Updated place rating:", {
-      placeId,
-      average,
-      count
-    });
+   
   } catch (err) {
     console.error("updatePlaceRating error:", err);
   }

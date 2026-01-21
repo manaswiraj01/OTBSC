@@ -6,7 +6,7 @@
 
 .glass-card {
   backdrop-filter: blur(14px);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(227, 223, 223, 0.85);
 }
 
 .skeleton-shimmer {
@@ -23,7 +23,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.6),
+    rgba(73, 71, 71, 0.6),
     transparent
   );
   animation: shimmer 1.5s infinite;
