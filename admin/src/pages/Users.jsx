@@ -1,46 +1,27 @@
 import { useAuth } from "@clerk/clerk-react";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { BASE_URL_ADMIN } from "../lib/constants.js";
 import { SearchForm } from "../components/search-form.jsx";
 import { Button } from "@/components/ui/button.jsx";
+import useUsers from "@/hooks/useUsers.js";
+import { useState } from "react";
+import DeleteUserModal from "@/components/DeleteUserModal";
+
 
 
 const UsersPage = () => {
   const { getToken, isLoaded, isSignedIn } = useAuth();
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        if (!isLoaded || !isSignedIn) return;
-
-        const token = await getToken();
-
-        const res = await axios.get(
-          BASE_URL_ADMIN + "/users",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
 
 
-        setUsers(res.data);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to fetch users");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { users, loading, error, handleDeleteUser } = useUsers({
+    isLoaded,
+    isSignedIn,
+    getToken,
+  });
 
-    fetchUsers();
-  }, [isLoaded, isSignedIn, getToken]);
+  const [deleteUserId, setDeleteUserId] = useState(null);
 
+
+  if (!isLoaded) return null;
+  if (!isSignedIn) return <p>Please sign in</p>;
   if (loading) return <p>Loading users...</p>;
   if (error) return <p>{error}</p>;
 
@@ -137,7 +118,7 @@ const UsersPage = () => {
             <span>Gender</span>
             <span>Country</span>
             <span>Joined</span>
-            <span className="text-right">Action</span>
+            <span>Action</span>
           </div>
 
 
@@ -147,10 +128,10 @@ const UsersPage = () => {
               <div
                 key={user._id}
                 className="
-        flex flex-col gap-4
+        flex flex-col
         lg:grid lg:grid-cols-[2fr_1fr_1fr_1fr_1fr_auto]
-        px-4 lg:px-6 py-4
-        hover:bg-white/5 transition
+        pl-5 py-4
+       transition
       "
               >
                 {/* USER */}
@@ -172,44 +153,42 @@ const UsersPage = () => {
                     )}
                   </div>
 
-                  <div>
+                  <div className="">
                     <p className="text-white font-medium">{user.name}</p>
                     <p className="text-sm text-zinc-400">{user.email}</p>
                   </div>
                 </div>
 
                 {/* PHONE */}
-                <div className="text-sm text-zinc-300 lg:flex lg:items-center">
+                <div className="text-sm text-zinc-300 lg:flex lg:items-center mx-2">
                   {user.phoneNo || "—"}
                 </div>
 
                 {/* GENDER */}
-                <div className="text-sm text-zinc-300 lg:flex lg:items-center">
+                <div className="text-sm text-zinc-300 lg:flex lg:items-center mx-4">
                   {user.gender || "—"}
                 </div>
 
                 {/* COUNTRY */}
-                <div className="text-sm text-zinc-300 lg:flex lg:items-center">
+                <div className="text-sm text-zinc-300 lg:flex lg:items-center mx-5">
                   {user.country || "—"}
                 </div>
 
                 {/* JOINED */}
-                <div className="text-sm text-zinc-300 lg:flex lg:items-center">
+                <div className="text-sm text-zinc-300 lg:flex lg:items-center mx-5">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </div>
 
                 {/* ACTION */}
-                <div className="flex justify-end items-center">
-                  <Button variant="destructive"
-                    onClick={() => handleDeleteUser(user._id)}
-                    className="
-            p-2 rounded-md
-            transition
-          "
-                    title="Delete user"
+                <div className="flex justify-end items-center mx-4 
+                ">
+                  <Button className="p-2 rounded-md transition bg-red-600 hover:bg-destructive/90 text-white"
+
+                    onClick={() => setDeleteUserId(user._id)}
                   >
                     Delete
                   </Button>
+
                 </div>
               </div>
             ))}
@@ -267,10 +246,20 @@ const UsersPage = () => {
         </div>
       </div>
 
+      <DeleteUserModal
+        open={!!deleteUserId}
+        onClose={() => setDeleteUserId(null)}
+        onConfirm={async () => {
+          await handleDeleteUser(deleteUserId);
+          setDeleteUserId(null);
+        }}
+      />
+
+
 
       {/* ===== PAGINATION (next step) ===== */}
     </div>
   );
 };
 
-export default UsersPage;
+export default UsersPage;                                                                                                                                                                                       
