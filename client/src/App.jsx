@@ -33,7 +33,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="App">
       <Toaster />
       <Routes>
         <Route path='/' element={<Body />}>

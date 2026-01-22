@@ -54,137 +54,115 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
 
     return (
         <div
-            className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-base-200 shadow-md' : 'bg-base-100'
-                }`}
+            className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out py-4 md:py-6 bg-base-100 border-b-2 border-pink-500 ${scrolled ? 'shadow-md' : ''}`}
         >
-
-            <div className="sm:w-1/2 md:w-1/3 mx-4 lg:mx-10 xl:mx-20">
-                <img onClick={() => navigate('/')} className="w-[250px] cursor-pointer" src="https://obms-tourist.rajasthan.gov.in/_next/static/media/image.891ad7d6.png" alt="logo" />
-            </div>
-
-            {/* Mobile hamburger */}
-            <div className="flex-1 flex justify-end lg:hidden">
-                <button onClick={() => setMenuOpen(!menuOpen)} className="btn btn-ghost">
-                    <RxHamburgerMenu className="size-8" />
-                </button>
-            </div>
-
-            <div className="hidden lg:flex lg:mx-8 justify-end items-center w-2/3 xl:mx-12 ">
-                <div className="items-center">
-                    <ul className="flex justify-center lg:gap-8 xl:gap-12">
+            <div className="max-w-7xl w-full mx-auto flex items-center px-2 sm:px-4 md:px-8">
+                <div className="flex-shrink-0 mr-6">
+                    <img onClick={() => navigate('/')} className="w-[120px] md:w-[180px] lg:w-[220px] cursor-pointer" src="https://obms-tourist.rajasthan.gov.in/_next/static/media/image.891ad7d6.png" alt="logo" />
+                </div>
+                {/* Navigation Links and Actions - take full remaining width, right align ul */}
+                <div className="flex-1 hidden lg:flex justify-end items-center gap-6 md:gap-10 lg:gap-12">
+                    <ul className="flex gap-6 md:gap-10 lg:gap-12 items-center justify-end">
                         <li className="text-lg">
-                            <Link to="/" className={isActive("/") ? "border-b-2 border-pink-500 font-semibold" : ""}>Home</Link>
+                            <Link to="/" className={isActive("/") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>Home</Link>
                         </li>
                         <li className="text-lg">
-                            <Link to="/about" className={isActive("/about") ? "border-b-2 border-pink-500 font-semibold" : ""}>About</Link>
+                            <Link to="/about" className={isActive("/about") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>About</Link>
                         </li>
                         <li className="text-lg">
-                            <Link to="/explore" className={isActive("/explore") ? "border-b-2 border-pink-500 font-semibold" : ""}>Explore</Link>
+                            <Link to="/explore" className={isActive("/explore") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>Explore</Link>
                         </li>
                         <li className="text-lg">
-                            <Link to="/help" className={isActive("/help") ? "border-b-2 border-pink-500 font-semibold" : ""}>Help</Link>
+                            <Link to="/help" className={isActive("/help") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>Help</Link>
                         </li>
                         <li className="text-lg">
-                            <Link to="/faqs" className={isActive("/faqs") ? "border-b-2 border-pink-500 font-semibold" : ""}>FAQ</Link>
+                            <Link to="/faqs" className={isActive("/faqs") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>FAQ</Link>
+                        </li>
+                        <li>
+                            {toggleTheme === 'dark' ? <FiSun className="size-[23px] cursor-pointer text-white" onClick={() => setToggleTheme('light')} />
+                                : <LuSunMoon className="size-[23px] cursor-pointer text-black" onClick={() => setToggleTheme('dark')} />}
+                        </li>
+                        <li>
+                            {!user ?
+                                <button onClick={() => navigate('/login')} className="btn btn-secondary cursor-pointer">Login</button>
+                                :
+                                <div className="dropdown dropdown-end">
+                                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                                        <div className="w-10 rounded-full">
+                                            <img
+                                                alt="user image"
+                                                src={user?.photoUrl} className="w-full h-full object-cover cursor-pointer" />
+                                        </div>
+                                    </div>
+                                    <ul
+                                        tabIndex={0}
+                                        className={`menu menu-sm dropdown-content ${toggleTheme === 'dark' ? 'bg-gray-900 text-white' : 'bg-base-100'} rounded-box z-1 mt-3 w-52 p-2 shadow`}>
+                                        <li>
+                                            <Link to='/profile/edit' className="justify-between">
+                                                Profile
+                                                <span className="badge">New</span>
+                                            </Link>
+                                        </li>
+                                        <li><a>Settings</a></li>
+                                        <li><a onClick={handleLogout}>Logout</a></li>
+                                    </ul>
+                                </div>
+                            }
                         </li>
                     </ul>
-
-                </div>
-                <div className="lg:mx-8 xl:mx-12">
-                    {toggleTheme === 'dark' ? <FiSun className="size-[23px] cursor-pointer" onClick={() => setToggleTheme('light')} />
-                        : <LuSunMoon className="size-[23px] cursor-pointer" onClick={() => setToggleTheme('dark')} />}
-                </div>
-                <div className="flex justify-center items-center gap-2">
-                    <CiSearch className="size-[25px]" />
-                    <span className="text-lg">Search</span>
-                </div>
-                <div className="lg:mx-8 xl:mx-12">
-                    {!user ?
-                        <div className="">
-                            <button onClick={() => navigate('/login')} className="btn btn-secondary cursor-pointer">Login</button>
-                        </div> :
-                        <div className="">
-                            <div className="flex justify-center">
-                                <div className="">
-                                    <div className="dropdown dropdown-end">
-                                        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                                            <div className="w-10 rounded-full">
-                                                <img
-                                                    alt="user image"
-                                                    src={user?.photoUrl} className="w-full h-full object-cover cursor-pointer" />
-                                            </div>
-                                        </div>
-                                        <ul
-                                            tabIndex={0}
-                                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                                            <li>
-                                                <Link to='/profile/edit' className="justify-between">
-                                                    Profile
-                                                    <span className="badge">New</span>
-                                                </Link>
-                                            </li>
-                                            <li><a>Settings</a></li>
-                                            <li><a onClick={handleLogout}>Logout</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
                 </div>
             </div>
-
+            {/* Hamburger only for small screens */}
+            <div className="lg:hidden absolute right-4 top-4">
+                <button onClick={() => setMenuOpen(!menuOpen)} className="btn btn-ghost">
+                    <RxHamburgerMenu className={`size-8 ${toggleTheme === 'dark' ? 'text-white' : 'text-black'}`} />
+                </button>
+            </div>
             {menuOpen && (
-                <div className="lg:hidden absolute top-17 w-[40%] left-[60%] h-screen bg-base-100 shadow-md z-20 p-4">
-                    <div className="flex flex-col items-center h-full gap-10 text-justify">
-
-                        {/* Navigation Links */}
-                        <ul className="flex flex-col gap-8 text-lg">
-                            <li className="flex gap-2 items-center"><FaHome className="size-[25px]" />
+                <div className={`lg:hidden fixed top-0 left-0 w-full h-full bg-black/40 z-40`} onClick={() => setMenuOpen(false)}>
+                    <div className={`absolute top-0 right-0 w-72 max-w-[90vw] h-full ${toggleTheme === 'dark' ? 'bg-gray-900' : 'bg-base-100'} shadow-md z-50 p-6 flex flex-col items-center`} onClick={e => e.stopPropagation()}>
+                        <ul className="flex flex-col gap-6 text-lg w-full mt-16">
+                            <li className="flex gap-3 items-center"><FaHome className="size-[22px]" />
                                 <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
-                            <li className="flex gap-2 items-center">
-                                <FiInfo className="size-[25px]" />
+                            <li className="flex gap-3 items-center">
+                                <FiInfo className="size-[22px]" />
                                 <Link to="/about" onClick={() => setMenuOpen(false)}>About Us</Link></li>
-                            <li className="flex gap-2 items-center">
-                                <MdOutlineExplore className="size-[25px]" />
+                            <li className="flex gap-3 items-center">
+                                <MdOutlineExplore className="size-[22px]" />
                                 <Link to="/explore" onClick={() => setMenuOpen(false)}>Explore</Link></li>
-                            <li className="flex gap-2 items-center">
-                                <IoChatbubbleEllipsesOutline className="size-[25px]" />
+                            <li className="flex gap-3 items-center">
+                                <IoChatbubbleEllipsesOutline className="size-[22px]" />
                                 <Link to="/help" onClick={() => setMenuOpen(false)}>Help/FAQ</Link></li>
-                            <li className="flex gap-2 items-center">
-                                <BsQuestionCircle className="size-[25px]" />
+                            <li className="flex gap-3 items-center">
+                                <BsQuestionCircle className="size-[22px]" />
                                 <Link to="/faqs" onClick={() => setMenuOpen(false)}>FAQs</Link></li>
-                            <li className="flex gap-2 items-center">{toggleTheme === 'dark' ? (
-                                <FiSun className="size-[23px]" onClick={() => setToggleTheme('light')} />
+                            <li className="flex gap-3 items-center">{toggleTheme === 'dark' ? (
+                                <FiSun className="size-[22px]" onClick={() => setToggleTheme('light')} />
                             ) : (
-                                <LuSunMoon className="size-[23px]" onClick={() => setToggleTheme('dark')} />
+                                <LuSunMoon className="size-[22px]" onClick={() => setToggleTheme('dark')} />
                             )}
                                 <span className="text-lg">Theme</span></li>
-
-                            <div className="">
-                                {!user ? (
-                                    <button onClick={() => navigate('/login')} className="btn btn-secondary">
-                                        Login
-                                    </button>
-                                ) : (
-                                    <div className="dropdown dropdown-bottom flex text-lg text-justify gap-2">
-                                        <div className="w-8">
-                                            <img src={user.photoUrl} alt="user profile image" className="w-full h-full rounded-full object-cover" />
-                                        </div>
-                                        <li><Link to="/profile/edit">Profile</Link></li>
-                                    </div>
-                                )}
-                            </div>
-                            {user && <div>
-                                <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>
-                            </div>}
+                            {user && (
+                                <li className="flex gap-3 items-center">
+                                    <img src={user.photoUrl} alt="user profile image" className="w-8 h-8 rounded-full object-cover" />
+                                    <Link to="/profile/edit" onClick={() => setMenuOpen(false)}>Profile</Link>
+                                </li>
+                            )}
                         </ul>
+                        <div className="w-full flex flex-col items-center mt-8">
+                            {!user ? (
+                                <button onClick={() => { setMenuOpen(false); navigate('/login'); }} className="btn btn-secondary w-full">
+                                    Login
+                                </button>
+                            ) : (
+                                <button className="btn btn-secondary w-full" onClick={() => { setMenuOpen(false); handleLogout(); }}>Logout</button>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
-
         </div>
-    )
-}
+    );
+};
 
 export default Navbar;
