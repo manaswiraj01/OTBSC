@@ -13,6 +13,8 @@ import placeRouter from "./routes/place.js";
 import locationRouter from "./routes/locationRoutes.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import clerkWebhook from "./routes/clerkWebhook.js";
+import chatbotRoutes from "./routes/chatbot.routes.js";
+
 
 dotenv.config();
 
@@ -40,6 +42,8 @@ app.use("/", locationRouter);
 app.use("/", reviewRouter);
 
 app.use("/admin", adminRouter);
+
+app.use("/chatbot", chatbotRoutes);
 
 connectDB()
   .then(() => {

@@ -16,6 +16,8 @@ import { BsQuestionCircle } from "react-icons/bs";
 import { FiInfo } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
 
+import { Button } from "./ui/button";
+
 
 const Navbar = ({ toggleTheme, setToggleTheme }) => {
 

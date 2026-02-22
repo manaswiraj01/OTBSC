@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import Navbar from './Navbar'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import Footer from './Footer'
-
+import FloatingChatbot from "@/components/FloatingChatbot"
 
 // const Body = () => {
 //   const [toggleTheme, setToggleTheme] = useState('dark');
@@ -18,6 +18,15 @@ import Footer from './Footer'
 
 const Body = () => {
   const [toggleTheme, setToggleTheme] = useState('dark');
+  const location = useLocation();
+
+  const hideChatbotRoutes = [
+    "/login",
+    "/profile/edit"
+  ];
+
+
+  const shouldShowChatbot = !hideChatbotRoutes.includes(location.pathname);
 
   return (
     <div data-theme={toggleTheme} className="min-h-screen flex flex-col bg-base-100 text-base-content transition-colors duration-500">
@@ -26,6 +35,7 @@ const Body = () => {
         <Outlet />
       {/* </main> */}
       <Footer />
+      {shouldShowChatbot && <FloatingChatbot />}
     </div>
   );
 };
