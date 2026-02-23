@@ -20,16 +20,11 @@ export const handleChatbotStep = async (req, res) => {
         // DISCARD (FULL RESET)
         // =============================
         if (action === "DISCARD") {
-            session.currentStep = "GREETING";
-            session.selectedState = null;
-            session.selectedCity = null;
-            session.selectedCategory = null;
-            session.selectedPlace = null;
-            session.visitDate = null;
-            session.tickets = [];
-            session.totalAmount = null;
 
-            await session.save();
+            await ChatbotSession.deleteOne({
+                user: userId,
+                isActive: true,
+            });
 
             return res.json({
                 message: "Booking discarded successfully.",
@@ -272,9 +267,9 @@ export const handleChatbotStep = async (req, res) => {
                     }
 
                     calculatedTickets.push({
-                        visitorType: t.type,
+                        visitorType: `${t.nationality} ${t.type}`,  
                         quantity: t.quantity,
-                        price,
+                        price: price * t.quantity,                 
                     });
 
                     totalAmount += price * t.quantity;
@@ -318,4 +313,9 @@ export const handleChatbotStep = async (req, res) => {
         console.error("Chatbot Error:", error);
         return res.status(500).json({ message: "Chatbot flow failed" });
     }
+};
+
+export const deleteSession = async (req, res) => {
+  await ChatbotSession.deleteMany({ user: req.user.id });
+  res.json({ message: "Session cleared" });
 };

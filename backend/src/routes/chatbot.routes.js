@@ -1,9 +1,11 @@
 import express from "express";
 import { userAuth } from "../middlewares/auth.js";
-import { handleChatbotStep } from "../controllers/chatbot.controller.js";
+import { handleChatbotStep, deleteSession } from "../controllers/chatbot.controller.js";
 
 const router = express.Router();
 
 router.post("/chat", userAuth, handleChatbotStep);
+
+router.delete("/session", userAuth, deleteSession);
 
 export default router;

@@ -1,0 +1,121 @@
+import Stripe from "stripe";
+import ChatbotSession from "../models/chatbotSessionModal.js";
+import Booking from "../models/bookingModel.js";
+import Place from "../models/placeModel.js";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+export const stripeWebhook = async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            sig,
+            process.env.STRIPE_WEBHOOK_SECRET
+        );
+    } catch (err) {
+        console.log("Webhook signature failed:", err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+        const sessionData = event.data.object;
+
+        const userId = sessionData.metadata.userId;
+
+        // 🔎 Get active chatbot session
+        const chatbotSession = await ChatbotSession.findOne({
+            user: userId,
+            isActive: true,
+        });
+
+        if (!chatbotSession) return res.json({ received: true });
+
+        // 🔎 Get place details
+        const place = await Place.findById(chatbotSession.selectedPlace);
+
+        if (!place) return res.json({ received: true });
+
+        // 🧾 Generate booking reference
+        const bookingRef = "OTBSC-" + Date.now();
+
+        // 🔥 Convert tickets to Booking model format
+        const formattedTickets = chatbotSession.tickets.map((t) => ({
+            visitorType: t.visitorType,
+            numberOfTickets: t.quantity,
+            totalPrice: t.price,
+        }));
+
+        // ✅ Create booking
+        const booking = await Booking.create({
+            bookingRef,
+            userId,
+            placeId: place._id,
+            name: place.name,
+            category: place.category,
+            address: place.address,
+            city: place.city,
+            state: place.state,
+            pincode: place.pincode,
+            visitDate: chatbotSession.visitDate,
+            ticketDetails: formattedTickets,
+            totalAmount: chatbotSession.totalAmount,
+            paymentStatus: "Paid",
+        });
+
+        await ChatbotSession.findByIdAndDelete(chatbotSession._id);
+    }
+
+    res.json({ received: true });
+};
+
+export const createCheckoutSession = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const session = await ChatbotSession.findOne({
+            user: userId,
+            isActive: true,
+        });
+
+        if (!session || !session.totalAmount) {
+            return res.status(400).json({
+                message: "No active booking session found",
+            });
+        }
+
+        const stripeSession = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+
+            line_items: [
+                {
+                    price_data: {
+                        currency: "inr",
+                        product_data: {
+                            name: "OTBSC Ticket Booking",
+                        },
+                        unit_amount: session.totalAmount * 100,
+                    },
+                    quantity: 1,
+                },
+            ],
+
+            success_url: `${process.env.CLIENT_URL}/payment-success`,
+            cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+
+            metadata: {
+                userId: userId.toString(),
+            },
+        });
+
+        res.json({ url: stripeSession.url });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Stripe session failed" });
+    }
+};

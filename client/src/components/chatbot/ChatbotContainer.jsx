@@ -50,7 +50,6 @@ export default function ChatbotContainer() {
         setOptions(data.options || [])
         setDiscardOption(data.discardOption || false)
 
-        // 🔥 THIS IS THE FIX
         if (data.pricing) {
             setPricing(data.pricing)
             setShowBookingModal(true)
@@ -100,20 +99,40 @@ export default function ChatbotContainer() {
     }
 
     const handleDiscard = async () => {
-
-        const data = await sendChatbotStep("DISCARD")
-
-        setMessages(prev => [
-            ...prev,
-            { role: "bot", text: data.message }
-        ])
-
-        handleBotResponse(data)
+        try {
+            const data = await sendChatbotStep("DISCARD")
+            handleBotResponse(data)
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     // 🔥 When BookingModal submits tickets
     const handleBookingSuccess = (data) => {
         handleBotResponse(data)
+    }
+
+    const handleModalClose = async () => {
+        try {
+            setLoading(true)
+
+            // Call backend to reset session
+            const data = await sendChatbotStep("DISCARD")
+
+            // Reset frontend state
+            setShowBookingModal(false)
+            setPricing(null)
+            setSelectedPlace(null)
+            setSelectedValue(null)
+
+            // Update chat with restart message
+            handleBotResponse(data)
+
+        } catch (err) {
+            console.error(err)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -147,7 +166,7 @@ export default function ChatbotContainer() {
                 <BookingModal
                     placeId={selectedPlace}
                     pricing={pricing}
-                    onClose={() => setShowBookingModal(false)}
+                    onClose={handleModalClose}
                     onSuccess={handleBookingSuccess}
                 />
             )}

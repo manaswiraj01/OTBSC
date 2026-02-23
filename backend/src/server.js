@@ -14,6 +14,8 @@ import locationRouter from "./routes/locationRoutes.js";
 import reviewRouter from "./routes/reviewRoute.js";
 import clerkWebhook from "./routes/clerkWebhook.js";
 import chatbotRoutes from "./routes/chatbot.routes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
+import { stripeWebhook } from "./controllers/paymentController.js";
 
 
 dotenv.config();
@@ -28,6 +30,12 @@ app.use(
 );
 
 app.use("/clerk/webhook", clerkWebhook);
+
+app.post(
+  "/payment/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
@@ -44,6 +52,8 @@ app.use("/", reviewRouter);
 app.use("/admin", adminRouter);
 
 app.use("/chatbot", chatbotRoutes);
+
+app.use("/payment", paymentRouter);
 
 connectDB()
   .then(() => {

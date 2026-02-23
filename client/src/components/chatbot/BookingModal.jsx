@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { sendChatbotStep } from "./chatbotApi"
+import { BASE_URL } from "@/utils/constants"
 
 export default function BookingModal({
   pricing,
@@ -106,16 +107,36 @@ export default function BookingModal({
     try {
       setLoading(true)
 
-      const data = await sendChatbotStep(null, {
+      // 🔥 STEP 1: Save ticket info in chatbot session
+      await sendChatbotStep(null, {
         visitDate,
         tickets: formattedTickets
       })
 
-      onSuccess(data)
-      onClose()
+      // 🔥 STEP 2: Create Stripe checkout session
+      const response = await fetch(
+         BASE_URL + "/payment/create-checkout",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // IMPORTANT (cookies auth)
+        }
+      )
+
+      const data = await response.json()
+
+      if (data.url) {
+        // 🔥 STEP 3: Redirect to Stripe
+        window.location.href = data.url
+      } else {
+        alert("Stripe session failed")
+      }
 
     } catch (err) {
       console.error(err)
+      alert("Something went wrong")
     } finally {
       setLoading(false)
     }
