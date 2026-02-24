@@ -104,8 +104,8 @@ export const createCheckoutSession = async (req, res) => {
                 },
             ],
 
-            success_url: `${process.env.CLIENT_URL}/payment-success`,
-            cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+            success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL}/payment-cancel?session_id={CHECKOUT_SESSION_ID}`,
 
             metadata: {
                 userId: userId.toString(),
@@ -118,4 +118,38 @@ export const createCheckoutSession = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: "Stripe session failed" });
     }
+};
+
+export const verifySession = async (req, res) => {
+  try {
+    const { session_id, type } = req.query;
+
+    if (!session_id) {
+      return res.status(400).json({ valid: false });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    if (!session) {
+      return res.json({ valid: false });
+    }
+
+    // ✅ Success page check
+    if (type === "success") {
+      if (session.payment_status === "paid") {
+        return res.json({ valid: true });
+      }
+      return res.json({ valid: false });
+    }
+
+    // ✅ Cancel page check
+    if (type === "cancel") {
+      return res.json({ valid: true });
+    }
+
+    return res.json({ valid: false });
+
+  } catch (error) {
+    return res.json({ valid: false });
+  }
 };
