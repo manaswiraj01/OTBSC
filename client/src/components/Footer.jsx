@@ -1,53 +1,109 @@
-import React from 'react'
+import React from "react"
+import jalmahal from "../assets/jalmahal.jpg"
+import { Link } from "react-router-dom"
 
 const Footer = () => {
+
+  const footerSections = [
+    {
+      title: "Explore",
+      links: [
+        { name: "Museums", path: "/explore?category=Museum" },
+        { name: "Monuments", path: "/explore?category=Monument" },
+        { name: "Wildlife", path: "/explore?category=Wildlife" }
+      ]
+    },
+    {
+      title: "Company",
+      links: [
+        { name: "About us", path: "/about" },
+        { name: "Help center", path: "/help" },
+        { name: "FAQs", path: "/faqs" }
+      ]
+    },
+    {
+      title: "Legal",
+      links: [
+        { name: "Terms of use", path: "/terms-of-use" },
+        { name: "Privacy policy", path: "/privacy-policy" },
+        { name: "Refund policy", path: "/refund-policy" },
+      ]
+    },
+    {
+      title: "Explore",
+      links: [
+        { name: "Features", path: "/features" },
+        { name: "Enterprise", path: "/enterprise" },
+        { name: "Security", path: "/security" },
+        { name: "Pricing", path: "/pricing" }
+      ]
+    },
+  ]
+
+  const handleScrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    })
+  }
+
   return (
-    <footer className="w-full bg-base-200 border-t-2 border-pink-500 text-base-content pt-10 pb-6 px-4 sm:px-8 md:px-16 mt-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-y-8 gap-x-4 md:gap-x-8">
-        <nav className="flex flex-col">
-          <h6 className="footer-title mb-2 font-semibold text-pink-500 uppercase">Services</h6>
-          <a className="link link-hover mb-1">Branding</a>
-          <a className="link link-hover mb-1">Design</a>
-          <a className="link link-hover mb-1">Marketing</a>
-          <a className="link link-hover mb-1">Advertisement</a>
-        </nav>
-        <nav className="flex flex-col">
-          <h6 className="footer-title mb-2 font-semibold text-pink-500 uppercase">Company</h6>
-          <a className="link link-hover mb-1">About us</a>
-          <a className="link link-hover mb-1">Contact</a>
-          <a className="link link-hover mb-1">Jobs</a>
-          <a className="link link-hover mb-1">Press kit</a>
-        </nav>
-        <nav className="flex flex-col">
-          <h6 className="footer-title mb-2 font-semibold text-pink-500 uppercase">Legal</h6>
-          <a className="link link-hover mb-1">Terms of use</a>
-          <a className="link link-hover mb-1">Privacy policy</a>
-          <a className="link link-hover mb-1">Cookie policy</a>
-        </nav>
-        <nav className="flex flex-col">
-          <h6 className="footer-title mb-2 font-semibold text-pink-500 uppercase">Social</h6>
-          <a className="link link-hover mb-1">Twitter</a>
-          <a className="link link-hover mb-1">Instagram</a>
-          <a className="link link-hover mb-1">Facebook</a>
-          <a className="link link-hover mb-1">GitHub</a>
-        </nav>
-        <nav className="flex flex-col">
-          <h6 className="footer-title mb-2 font-semibold text-pink-500 uppercase">Explore</h6>
-          <a className="link link-hover mb-1">Features</a>
-          <a className="link link-hover mb-1">Enterprise</a>
-          <a className="link link-hover mb-1">Security</a>
-          <a className="link link-hover mb-1">Pricing</a>
-        </nav>
-        <nav className="flex flex-col">
-          <h6 className="footer-title mb-2 font-semibold text-pink-500 uppercase">Apps</h6>
-          <a className="link link-hover mb-1">Mac</a>
-          <a className="link link-hover mb-1">Windows</a>
-          <a className="link link-hover mb-1">iPhone</a>
-          <a className="link link-hover mb-1">Android</a>
-        </nav>
-      </div>
-      <div className="max-w-7xl mx-auto mt-8 text-center text-xs text-gray-500 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} OTBSC. All rights reserved.
+    <footer className="relative w-full border-t-2 border-pink-500 overflow-hidden">
+
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center brightness-110 contrast-110 dark:brightness-125"
+        style={{ backgroundImage: `url(${jalmahal})` }}
+      ></div>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-white/80 dark:bg-black/60"></div>
+
+      {/* Content */}
+      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16 py-12 text-gray-800 dark:text-gray-200">
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-10 gap-x-8">
+
+          {footerSections.map((section, index) => (
+            <nav key={index} className="flex flex-col space-y-2 text-left">
+
+              <h6 className="text-pink-500 font-semibold uppercase text-sm tracking-wide">
+                {section.title}
+              </h6>
+
+              {section.links.map((link, i) => (
+                link.external ? (
+                  <a
+                    key={i}
+                    href={link.external}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-pink-500 transition-colors duration-200"
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={i}
+                    to={link.path}
+                    onClick={handleScrollTop}
+                    className="hover:text-pink-500 transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                )
+              ))}
+
+            </nav>
+          ))}
+
+        </div>
+
+        {/* Bottom Line */}
+        <div className="mt-12 text-center text-xs text-gray-600 dark:text-gray-400">
+          © {new Date().getFullYear()} OTBSC. All rights reserved.
+        </div>
+
       </div>
     </footer>
   )

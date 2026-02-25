@@ -212,4 +212,28 @@ placeRouter.get("/get/places/category/:category", async (req, res) => {
   }
 })
 
+placeRouter.get("/get/top-rated", async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    const places = await Place.find({
+      category,
+      "rating.average": { $gte: 4.5 }
+    })
+      .sort({ "rating.average": -1, "rating.count": -1 })
+      .limit(8);
+
+    res.status(200).json({
+      success: true,
+      data: places
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching top rated places"
+    });
+  }
+});
+
 export default placeRouter;

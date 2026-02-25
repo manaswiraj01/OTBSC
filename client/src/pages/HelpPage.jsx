@@ -69,7 +69,7 @@ const HelpPage = ({ isOpen, onClose }) => {
     <div data-theme="daisy" className="min-h-screen bg-base-200 p-4 flex items-center justify-center">
       
       
-      <div className="card w-200 max-w-4xl mt-20 border border-gray-400 bg-base-100 rounded-2xl">
+      <div className="card w-200 max-w-4xl border border-gray-400 bg-base-100 rounded-2xl">
         <div className="card-body p-8">
           {/* Header */}
           <div className="flex justify-center items-center mb-6">
@@ -85,7 +85,7 @@ const HelpPage = ({ isOpen, onClose }) => {
           </div>
 
           {/* Form Fields */}
-          <div className="space-y-6 pl-4.5 pt-4.5">
+          <div className="space-y-6 pl-4.5">
             {/* Row 1: Mobile No & Full Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="form-control">
@@ -260,7 +260,7 @@ const HelpPage = ({ isOpen, onClose }) => {
           </div>
 
           {/* Submit Button */}
-          <div className="form-control mt-8 flex justify-center">
+          <div className="form-control flex justify-center">
             <button
               onClick={handleSubmit}
               className="btn text-white font-semibold text-lg h-14 w-175 rounded-lg"

@@ -14,7 +14,11 @@ import { Context } from './context/Context';
 import PlaceDetails from './pages/PlaceDetails.jsx';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
+import Policy from './pages/Policy';
+import RefundPolicyPage from './pages/RefundPolicyPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
 
+import ScrollToTop from "./components/ScrollToTop"
 
 function App() {
   const { loading, setLoading, fetchUser, userData } = useContext(Context);
@@ -36,6 +40,7 @@ function App() {
 
   return (
     <div className="App">
+      <ScrollToTop />
       <Toaster />
       <Routes>
         <Route path='/' element={<Body />}>
@@ -49,6 +54,9 @@ function App() {
           <Route path='/public/get/place/:id' element={<PlaceDetails />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-cancel" element={<PaymentCancel />} />
+          <Route path="/privacy-policy" element={<Policy />} />
+          <Route path="/refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/terms-of-use" element={<TermsOfUsePage />} />
         </Route>
       </Routes>
     </div>
