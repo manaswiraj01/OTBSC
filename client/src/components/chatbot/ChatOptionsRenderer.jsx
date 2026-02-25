@@ -11,11 +11,11 @@ export default function ChatOptionsRenderer({
   // 🔹 GREETING & CATEGORY → Buttons
   if (step === "GREETING" || step === "CATEGORY_SELECTION") {
     return (
-      <div className="p-4 space-y-2 border-t border-base-300">
+      <div className="p-4 space-y-2">
         {options.map((option, index) => (
           <button
             key={index}
-            className="btn btn-outline w-full"
+            className="btn border-pink-500  w-full bg-transparent"
             onClick={() => onSelect(option)}
           >
             {option}
@@ -24,7 +24,7 @@ export default function ChatOptionsRenderer({
 
         {discardOption && (
           <button
-            className="btn btn-ghost w-full"
+            className="btn border-pink-500 w-full bg-transparent"
             onClick={onDiscard}
           >
             Discard Booking
@@ -41,10 +41,17 @@ export default function ChatOptionsRenderer({
     step === "PLACE_SELECTION"
   ) {
     return (
-      <div className="p-4 space-y-3 border-t border-base-300">
+      <div className="p-4 space-y-3">
 
         <select
-          className="select select-bordered w-full"
+          className="
+    select w-full
+    border-1 border-pink-500
+    focus:border-pink-500
+    focus:ring-0
+    focus:outline-none
+    outline-none
+  "
           value={selectedValue?.value || selectedValue || ""}
           onChange={(e) => {
 
@@ -83,7 +90,7 @@ export default function ChatOptionsRenderer({
 
         {discardOption && (
           <button
-            className="btn btn-ghost w-full"
+            className="btn border-pink-500 w-full bg-transparent"
             onClick={onDiscard}
           >
             Discard Booking

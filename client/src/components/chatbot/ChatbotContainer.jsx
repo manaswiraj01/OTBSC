@@ -150,11 +150,17 @@ export default function ChatbotContainer() {
 
             {/* NEXT BUTTON */}
             {options.length > 0 && !showBookingModal && (
-                <div className="p-3 border-t bg-base-100">
+                <div className="p-3 bg-base-100">
                     <button
                         onClick={handleNext}
                         disabled={!selectedValue || loading}
-                        className="btn btn-primary w-full"
+                        className={`
+        btn w-full transition-colors duration-200
+        ${selectedValue && !loading
+                                ? "bg-pink-500 hover:bg-pink-600 text-white border-none"
+                                : "bg-gray-100 text-black cursor-not-allowed border-none dark:bg-gray-400"
+                            }
+      `}
                     >
                         {loading ? "Processing..." : "Next"}
                     </button>
