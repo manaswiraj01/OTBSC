@@ -36,7 +36,7 @@ const VideoSection = () => {
     const [selectedVideo, setSelectedVideo] = useState(places[0]);
 
     return (
-        <section className="w-full bg-base-100">
+        <section className="w-full bg-base-100 mb-6">
             {/* Important: items-stretch */}
             <div className="flex flex-col md:flex-row items-stretch">
 
@@ -61,7 +61,7 @@ const VideoSection = () => {
                 </div>
 
                 {/* RIGHT PANEL */}
-                <div className="w-full md:w-2/5 lg:w-1/3 bg-base-200 p-6 md:p-8 flex flex-col">
+                <div className="w-full md:w-2/5 lg:w-1/3 bg-base-300 p-6 md:p-8 flex flex-col">
 
                     <h2 className="text-xl md:text-2xl font-bold mb-6">
                         Discover Beautiful Places with US
@@ -81,7 +81,7 @@ const VideoSection = () => {
         transition-all duration-300 border items-start h-[110px]
         ${isActive
                                             ? "bg-pink-500 text-white border-pink-500 shadow-lg"
-                                            : "bg-base-100 border-base-300 hover:bg-base-200 dark:hover:bg-base-100"
+                                            : "bg-base-100 hover:bg-base-200 dark:hover:bg-base-100"
                                         }
       `}
                                 >

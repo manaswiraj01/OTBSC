@@ -56,7 +56,7 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
 
     return (
         <div
-            className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out py-4 md:py-6 bg-base-100 border-b-2 border-pink-500 ${scrolled ? 'shadow-md' : ''}`}
+            className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out h-16 md:h-20 flex items-center bg-base-100 border-b-2 border-pink-500 ${scrolled ? 'shadow-md' : ''}`}
         >
             <div className="max-w-7xl w-full mx-auto flex items-center px-2 sm:px-4 md:px-8">
                 <div className="flex-shrink-0 mr-6">

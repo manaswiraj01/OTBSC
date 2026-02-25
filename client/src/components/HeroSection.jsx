@@ -3,22 +3,22 @@ import heroImage from "../assets/jodhpur.png";
 
 const HeroSection = () => {
   return (
-    <section className="w-full bg-base-200 px-6 md:px-16 py-20">
+    <section className="w-full bg-base-200 px-6 md:px-16 pb-20">
 
       <div className="w-full max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
 
         {/* LEFT SIDE TEXT */}
-        <div className="space-y-6 text-center md:text-left mt-10 ">
+        <div className="space-y-6 text-center md:text-left ">
 
           <p className="text-sm tracking-widest text-base-content">
             DISCOVER THE REAL BEAUTY OF
           </p>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-pink-400 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-pink-500 leading-tight">
             INDIA
           </h1>
 
-          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-pink-400 leading-relaxed">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-pink-500 leading-relaxed">
             THE LAND OF VIBRANT COLORS,
             MAJESTIC FORTS, AND TIMELESS TRADITIONS.
           </h2>
@@ -41,7 +41,7 @@ const HeroSection = () => {
               w-full
               max-w-[500px]
               rounded-2xl
-              mt-10
+              
               object-cover
             "
           />

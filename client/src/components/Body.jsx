@@ -31,9 +31,9 @@ const Body = () => {
   return (
     <div data-theme={toggleTheme} className="min-h-screen flex flex-col bg-base-100 text-base-content transition-colors duration-500">
       <Navbar toggleTheme={toggleTheme} setToggleTheme={setToggleTheme} />
-      {/* <main className="flex-1"> */}
+      <div className="flex-1 pt-16 md:pt-20">
         <Outlet />
-      {/* </main> */}
+      </div>
       <Footer />
       {shouldShowChatbot && <FloatingChatbot />}
     </div>
