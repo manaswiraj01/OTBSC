@@ -4,7 +4,7 @@ const SuggestedPlaces = ({ places }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-14">
+    <div>
       <h2 className="text-2xl font-semibold mb-4">
         🧭 Suggested Places Nearby
       </h2>

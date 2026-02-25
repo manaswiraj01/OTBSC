@@ -67,7 +67,7 @@ const ReviewSection = ({ placeId, user }) => {
   };
 
   return (
-    <div className="mt-14">
+    <div>
       <h2 className="text-2xl font-semibold mb-4">
         ⭐ Reviews
       </h2>
@@ -116,7 +116,7 @@ const ReviewSection = ({ placeId, user }) => {
         </>
       )}
 
-      <div className="mt-6 space-y-3">
+      <div className="space-y-3">
         {reviews.map((r) => (
           <div
             key={r._id}

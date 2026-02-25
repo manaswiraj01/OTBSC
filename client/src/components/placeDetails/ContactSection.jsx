@@ -1,6 +1,6 @@
 const ContactSection = ({ email, phone, address }) => {
   return (
-    <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="bg-base-200 p-6 rounded-xl">
         <h3 className="text-xl font-semibold mb-2">
           📞 Contact

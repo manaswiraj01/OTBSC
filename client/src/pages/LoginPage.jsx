@@ -62,7 +62,7 @@ const Login = () => {
 
 
   return (
-    <div className="min-h-screen pt-28 flex items-center justify-center  p-4">
+    <div className="min-h-screen flex items-center justify-center  p-4">
       <div className="w-1/2 border border-gray-400 rounded-2xl p-8">
         <h2 className="text-3xl font-bold text-center mb-6">
           {isLoginForm ? "Welcome Back!" : "Create an Account"}
@@ -176,13 +176,13 @@ const Login = () => {
           <button
             type="button"
             onClick={isLoginForm ? handleLogin : handleSignUp}
-            className="btn btn-secondary w-full mt-4"
+            className="btn btn-secondary w-full"
           >
             {isLoginForm ? "Login" : "Sign Up"}
           </button>
         </div>
 
-        <div className="text-center mt-4">
+        <div className="text-center">
           <p className="text-sm text-gray-600">
             {isLoginForm ? "New user?" : "Already have an account?"}{" "}
             <span

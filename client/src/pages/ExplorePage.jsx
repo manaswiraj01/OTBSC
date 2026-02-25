@@ -1,11 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom"
 import axios from "axios";
 import PlaceCard from "../components/placeCard.jsx";
 import { BASE_URL } from "../utils/constants.js";
 const categories = ["Museum", "Wildlife", "Monument"];
 import { FiSearch } from "react-icons/fi";
 
+import amer from "../assets/jalmahal.jpg";
+import footerbgImg from "../assets/footerbgImg.jpg";
+import hawamahal from "../assets/hawamahal.jpg";
 import jalmahal from "../assets/jalmahal.jpg";
+import patwaImg from "../assets/patwaImg.jpg";
+import tajmahalImg from "../assets/tajmahalImg.jpg";
+
 
 const ITEMS_PER_PAGE = 8;
 
@@ -16,6 +23,16 @@ const Explore = () => {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("latest"); // latest | top
+
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const exploreSectionRef = useRef(null);
+  const categoryFromUrl = searchParams.get("category");
+
+
+  const heroImages = [hawamahal, jalmahal, patwaImg, tajmahalImg, amer, footerbgImg];
+
+  const [currentImage, setCurrentImage] = useState(0);
 
   const fetchAllPlaces = async (sort = "latest") => {
     try {
@@ -49,19 +66,17 @@ const Explore = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAllPlaces("latest");
-  }, []);
-
-
-  const handleFilter = (category) => {
+  const handleFilter = async (category) => {
     setPage(1);
+
     if (selectedCategory === category) {
       setSelectedCategory(null);
-      fetchAllPlaces();
+      await fetchAllPlaces(sort);
+      navigate("/explore", { replace: true });
     } else {
       setSelectedCategory(category);
-      fetchByCategory(category);
+      await fetchByCategory(category);
+      navigate(`/explore?category=${category}`, { replace: true });
     }
   };
 
@@ -81,21 +96,42 @@ const Explore = () => {
     page * ITEMS_PER_PAGE
   );
 
+  useEffect(() => {
+    const loadData = async () => {
+      if (categoryFromUrl) {
+        // ✅ URL me category hai
+        setSelectedCategory(categoryFromUrl);
+        await fetchByCategory(categoryFromUrl);
+      } else {
+        // ✅ URL me category nahi hai
+        setSelectedCategory(null);   // 🔥 YEH IMPORTANT LINE THI
+        await fetchAllPlaces(sort);
+      }
+    };
+
+    loadData();
+  }, [categoryFromUrl, sort]);
+
+
+
   return (
-    <div className="relative min-h-[calc(100vh-64px)] items-center overflow-hidden top-0">
+    <div className="relative min-h-[calc(100vh-64px)] items-center overflow-hidden top-0 mb-10">
       {/* Hero Section - Background Image, Text Overlay, Theme-aware */}
-      <div className="relative w-full min-h-[520px] md:min-h-[600px] lg:min-h-[700px] xl:min-h-[750px] 2xl:min-h-[800px] flex items-center overflow-hidden bg-base-200 dark:bg-gray-900 pt-0">
+      <div className="relative w-full min-h-[520px] md:min-h-[600px] lg:min-h-[700px] xl:min-h-[750px] 2xl:min-h-[800px] flex items-center overflow-hidden bg-base-200 dark:bg-gray-900 ">
         {/* Background Image */}
-        <img
-          src={jalmahal}
-          alt="jal Mahal"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          style={{ pointerEvents: 'none' }}
-        />
+        {heroImages.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt="Explore"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${index === currentImage ? "opacity-100" : "opacity-0"
+              }`}
+          />
+        ))}
         {/* Subtle Overlay for readability */}
         <div className="absolute inset-0 w-full h-full z-10 bg-black/30 dark:bg-black/50" />
         {/* Centered Container for Text */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-16 flex flex-col justify-center items-start py-24 md:py-32">
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-16 flex flex-col justify-center items-start pb-24 md:pb-32">
           <p className="text-left text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-white mb-2 drop-shadow-lg">
             Welcome to <span className="font-bold">India&apos;s</span>
           </p>
@@ -108,7 +144,7 @@ const Explore = () => {
         </div>
       </div>
       {/* Search + Filters */}
-      <div className="mt-5 max-w-7xl mx-auto px-2 sm:px-4 md:px-8">
+      <div ref={exploreSectionRef} className="mt-5 max-w-7xl mx-auto px-2 sm:px-4 md:px-8">
         <div className="mb-10">
           <div className="flex flex-col gap-6">
             {/* SEARCH BAR (CENTERED) */}
@@ -181,29 +217,56 @@ const Explore = () => {
             </div>
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex flex-wrap justify-center mt-10 gap-2">
-                <button className="btn btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>
+              <div className="flex flex-wrap justify-center gap-2">
+
+                {/* Prev Button */}
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage(page - 1)}
+                  className={`btn btn-sm transition-all duration-300 
+      ${page === 1
+                      ? "bg-base-300 cursor-not-allowed"
+                      : "border-pink-500 hover:bg-pink-500 hover:text-white"
+                    }`}
+                >
                   Prev
                 </button>
+
+                {/* Page Numbers */}
                 {[...Array(totalPages)].map((_, i) => (
                   <button
                     key={i}
-                    className={`btn btn-sm ${page === i + 1 ? "btn-primary" : "btn-outline"}`}
                     onClick={() => setPage(i + 1)}
+                    className={`btn btn-sm transition-all duration-300 
+        ${page === i + 1
+                        ? "bg-pink-500 text-white"
+                        : "border-pink-500 hover:bg-pink-500 hover:text-white"
+                      }`}
                   >
                     {i + 1}
                   </button>
                 ))}
-                <button className="btn btn-sm" disabled={page === totalPages} onClick={() => setPage(page + 1)}>
+
+                {/* Next Button */}
+                <button
+                  disabled={page === totalPages}
+                  onClick={() => setPage(page + 1)}
+                  className={`btn btn-sm transition-all duration-300 
+      ${page === totalPages
+                      ? "bg-base-300 cursor-not-allowed"
+                      : "border-pink-500 hover:bg-pink-500 hover:text-white"
+                    }`}
+                >
                   Next
                 </button>
+
               </div>
             )}
           </>
         )}
         {/* Empty */}
         {!loading && filteredPlaces.length === 0 && (
-          <div className="text-center mt-16 text-gray-500">
+          <div className="text-center text-gray-500">
             No places found.
           </div>
         )}

@@ -1,6 +1,6 @@
 const PlaceDescription = ({ description }) => {
   return (
-    <div className="mt-8">
+    <div>
       <h2 className="text-2xl font-semibold mb-2">
         About this place
       </h2>

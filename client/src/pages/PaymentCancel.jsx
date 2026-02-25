@@ -48,7 +48,7 @@ export default function PaymentCancel() {
         verify();
     }, []);
 
-    if (loading) return <div className="text-center mt-10">Verifying...</div>;
+    if (loading) return <div className="text-center">Verifying...</div>;
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-base-200 to-base-300 px-4">

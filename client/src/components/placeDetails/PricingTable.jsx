@@ -1,6 +1,6 @@
 const PricingTable = ({ pricing }) => {
   return (
-    <div className="mt-10">
+    <div>
       <h2 className="text-2xl font-semibold mb-4">
         💰 Entry Pricing
       </h2>
