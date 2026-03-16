@@ -60,7 +60,7 @@ const EditProfile = () => {
 
 
     return (
-        <div className="min-h-screen pt-30 flex items-center justify-center p-4">
+        <div className="min-h-screen   flex items-center justify-center ">
             <div className="w-1/2 border border-gray-400 rounded-2xl p-8">
 
                 {/* Centered Heading */}

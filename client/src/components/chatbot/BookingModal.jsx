@@ -8,7 +8,24 @@ export default function BookingModal({
   onSuccess
 }) {
 
-  const today = new Date().toISOString().split("T")[0]
+  const getMinBookingDate = () => {
+
+    const now = new Date()
+
+    const cutoff = new Date()
+    cutoff.setHours(12, 0, 0, 0)
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    if (now >= cutoff) {
+      today.setDate(today.getDate() + 1)
+    }
+
+    return today.toISOString().split("T")[0]
+  }
+
+  const today = getMinBookingDate()
 
   const [visitDate, setVisitDate] = useState("")
   const [tickets, setTickets] = useState({
@@ -64,6 +81,16 @@ export default function BookingModal({
 
   const handleSubmit = async () => {
 
+    const selectedDate = new Date(visitDate)
+    const minDate = new Date(getMinBookingDate())
+
+    selectedDate.setHours(0, 0, 0, 0)
+
+    if (selectedDate < minDate) {
+      alert("Today's booking closed after 12 PM. Please select tomorrow.")
+      return
+    }
+
     if (!visitDate) {
       alert("Please select visit date")
       return
@@ -115,7 +142,7 @@ export default function BookingModal({
 
       // 🔥 STEP 2: Create Stripe checkout session
       const response = await fetch(
-         BASE_URL + "/payment/create-checkout",
+        BASE_URL + "/payment/create-checkout",
         {
           method: "POST",
           headers: {
@@ -135,8 +162,14 @@ export default function BookingModal({
       }
 
     } catch (err) {
+
       console.error(err)
-      alert("Something went wrong")
+
+      if (err?.response?.data?.message) {
+        alert(err.response.data.message)
+      } else {
+        alert("Booking failed. Please try again.")
+      }
     } finally {
       setLoading(false)
     }
@@ -163,6 +196,9 @@ export default function BookingModal({
               value={visitDate}
               onChange={(e) => setVisitDate(e.target.value)}
             />
+            <span className="text-xs text-gray-400">
+              Same-day booking closes at 12 PM
+            </span>
           </div>
 
           {[
@@ -239,7 +275,7 @@ export default function BookingModal({
           </div>
 
           <button
-            className="btn btn-primary w-full"
+            className="btn btn-secondary w-full"
             onClick={handleSubmit}
             disabled={loading}
           >

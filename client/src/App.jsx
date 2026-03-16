@@ -9,7 +9,7 @@ import Loader from './components/Loader';
 import AboutUsPage from './pages/AboutUsPage';
 import FAQs from './pages/FAQs';
 import ExplorePage from './pages/ExplorePage';
-import HelpPage from './pages/HelpPage';
+
 import { Context } from './context/Context';
 import PlaceDetails from './pages/PlaceDetails.jsx';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -19,6 +19,8 @@ import RefundPolicyPage from './pages/RefundPolicyPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 
 import ScrollToTop from "./components/ScrollToTop"
+import BookingsPage from './pages/BookingsPage';
+import HelpPage from './pages/HelpPage';
 
 function App() {
   const { loading, setLoading, fetchUser, userData } = useContext(Context);
@@ -57,6 +59,8 @@ function App() {
           <Route path="/privacy-policy" element={<Policy />} />
           <Route path="/refund-policy" element={<RefundPolicyPage />} />
           <Route path="/terms-of-use" element={<TermsOfUsePage />} />
+          <Route path="/bookings" element={<BookingsPage />} />
+          <Route path='/help' element={<HelpPage />} />
         </Route>
       </Routes>
     </div>

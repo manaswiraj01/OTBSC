@@ -10,7 +10,7 @@ const HeroSection = () => {
         {/* LEFT SIDE TEXT */}
         <div className="space-y-6 text-center md:text-left ">
 
-          <p className="text-sm tracking-widest text-base-content">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl tracking-widest text-base-content mt-4">
             DISCOVER THE REAL BEAUTY OF
           </p>
 

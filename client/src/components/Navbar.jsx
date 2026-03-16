@@ -15,6 +15,7 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { BsQuestionCircle } from "react-icons/bs";
 import { FiInfo } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
+import logo from "../assets/logo.png";
 
 import { Button } from "./ui/button";
 
@@ -58,9 +59,9 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
         <div
             className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out h-16 md:h-20 flex items-center bg-base-100 border-b-2 border-pink-500 ${scrolled ? 'shadow-md' : ''}`}
         >
-            <div className="max-w-7xl w-full mx-auto flex items-center px-2 sm:px-4 md:px-8">
-                <div className="flex-shrink-0 mr-6">
-                    <img onClick={() => navigate('/')} className="w-[120px] md:w-[180px] lg:w-[220px] cursor-pointer" src="https://obms-tourist.rajasthan.gov.in/_next/static/media/image.891ad7d6.png" alt="logo" />
+            <div className=" w-full  flex items-center  px-3 md:px-10 lg:px-16">
+                <div className="flex items-center ">
+                    <img onClick={() => navigate('/')} className="w-[190px] md:w-[180px] lg:w-[220px] size-40 cursor-pointer " src={logo} alt="logo" />
                 </div>
                 {/* Navigation Links and Actions - take full remaining width, right align ul */}
                 <div className="flex-1 hidden lg:flex justify-end items-center gap-6 md:gap-10 lg:gap-12">
@@ -105,8 +106,8 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
                                                 <span className="badge">New</span>
                                             </Link>
                                         </li>
-                                        <li><a>Settings</a></li>
-                                        <li><a onClick={handleLogout}>Logout</a></li>
+                                        <li><Link to="/bookings">Bookings</Link></li>
+                                        <li><Link onClick={handleLogout}>Logout</Link></li>
                                     </ul>
                                 </div>
                             }

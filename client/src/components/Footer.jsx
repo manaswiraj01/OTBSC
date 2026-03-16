@@ -29,15 +29,6 @@ const Footer = () => {
         { name: "Refund policy", path: "/refund-policy" },
       ]
     },
-    {
-      title: "Explore",
-      links: [
-        { name: "Features", path: "/features" },
-        { name: "Enterprise", path: "/enterprise" },
-        { name: "Security", path: "/security" },
-        { name: "Pricing", path: "/pricing" }
-      ]
-    },
   ]
 
   const handleScrollTop = () => {
@@ -60,47 +51,53 @@ const Footer = () => {
       <div className="absolute inset-0 bg-white/80 dark:bg-black/60"></div>
 
       {/* Content */}
-      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16 py-12 text-gray-800 dark:text-gray-200">
+      <div className="relative max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-14 text-gray-800 dark:text-gray-200">
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-10 gap-x-8">
+        {/* Grid Layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center md:text-left">
 
+          {/* Dynamic Sections */}
           {footerSections.map((section, index) => (
-            <nav key={index} className="flex flex-col space-y-2 text-left">
+            <nav key={index} className="flex flex-col space-y-3">
 
               <h6 className="text-pink-500 font-semibold uppercase text-sm tracking-wide">
                 {section.title}
               </h6>
 
               {section.links.map((link, i) => (
-                link.external ? (
-                  <a
-                    key={i}
-                    href={link.external}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-pink-500 transition-colors duration-200"
-                  >
-                    {link.name}
-                  </a>
-                ) : (
-                  <Link
-                    key={i}
-                    to={link.path}
-                    onClick={handleScrollTop}
-                    className="hover:text-pink-500 transition-colors duration-200"
-                  >
-                    {link.name}
-                  </Link>
-                )
+                <Link
+                  key={i}
+                  to={link.path}
+                  onClick={handleScrollTop}
+                  className="hover:text-pink-500 transition-colors duration-200"
+                >
+                  {link.name}
+                </Link>
               ))}
 
             </nav>
           ))}
 
+          {/* Contact Us Column */}
+          <div className="flex flex-col space-y-3">
+            <h6 className="text-pink-500 font-semibold uppercase text-sm tracking-wide">
+              Contact Us
+            </h6>
+
+            {/* No Redirect – Simple Text */}
+            <p className="hover:text-pink-500 transition-colors duration-200 cursor-default">
+              support@otbsc.com
+            </p>
+
+            <p className="hover:text-pink-500 transition-colors duration-200 cursor-default">
+              +91 98765 43210
+            </p>
+          </div>
+
         </div>
 
         {/* Bottom Line */}
-        <div className="mt-12 text-center text-xs text-gray-600 dark:text-gray-400">
+        <div className="mt-14 text-center text-xs text-gray-600 dark:text-gray-400">
           © {new Date().getFullYear()} OTBSC. All rights reserved.
         </div>
 
