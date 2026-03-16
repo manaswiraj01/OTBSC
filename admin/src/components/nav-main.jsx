@@ -14,6 +14,8 @@ import {
   CreditCard,
   Calendar,
   Users,
+  History,
+  Undo2,
 } from "lucide-react";
 
 export function NavMain() {
@@ -26,7 +28,7 @@ export function NavMain() {
   //   "data-[active=true]:bg-primary data-[active=true]:text-primary-foreground";
 
   const activeClass =
-  "data-[active=true]:bg-blue-600 data-[active=true]:text-white";
+    "data-[active=true]:bg-blue-600 data-[active=true]:text-white";
 
   return (
     <SidebarGroup>
@@ -85,6 +87,32 @@ export function NavMain() {
             <Link to="/dashboard/payments">
               <CreditCard className="size-4" />
               <span>Payments</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            isActive={isNestedActive("/dashboard/refund-requests")}
+            className={activeClass}
+          >
+            <Link to="/dashboard/refund-requests">
+              <Undo2 className="size-4" />
+              <span>Refund Requests</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            isActive={isNestedActive("/dashboard/refund-history")}
+            className={activeClass}
+          >
+            <Link to="/dashboard/refund-history">
+              <History className="size-4" />
+              <span>Refund History</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
