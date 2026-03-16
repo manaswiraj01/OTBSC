@@ -26,6 +26,9 @@ export const stripeWebhook = async (req, res) => {
 
         const userId = sessionData.metadata.userId;
 
+        // 🔥 IMPORTANT: Save Payment Intent ID (for refund later)
+        const paymentIntentId = sessionData.payment_intent;
+
         // 🔎 Get active chatbot session
         const chatbotSession = await ChatbotSession.findOne({
             user: userId,
@@ -39,9 +42,6 @@ export const stripeWebhook = async (req, res) => {
 
         if (!place) return res.json({ received: true });
 
-        // 🧾 Generate booking reference
-        const bookingRef = "OTBSC-" + Date.now();
-
         // 🔥 Convert tickets to Booking model format
         const formattedTickets = chatbotSession.tickets.map((t) => ({
             visitorType: t.visitorType,
@@ -49,9 +49,16 @@ export const stripeWebhook = async (req, res) => {
             totalPrice: t.price,
         }));
 
+        const existingBooking = await Booking.findOne({
+            paymentIntentId: paymentIntentId,
+        });
+
+        if (existingBooking) {
+            return res.json({ received: true });
+        }
+
         // ✅ Create booking
         const booking = await Booking.create({
-            bookingRef,
             userId,
             placeId: place._id,
             name: place.name,
@@ -64,7 +71,14 @@ export const stripeWebhook = async (req, res) => {
             ticketDetails: formattedTickets,
             totalAmount: chatbotSession.totalAmount,
             paymentStatus: "Paid",
+
+            // 🔥 NEW FIELDS (important)
+            bookingStatus: "Booked",
+            refundStatus: "NotInitiated",
+            paymentIntentId: paymentIntentId,
         });
+
+        console.log("Booking created:", booking._id);
 
         await ChatbotSession.findByIdAndDelete(chatbotSession._id);
     }
@@ -121,35 +135,35 @@ export const createCheckoutSession = async (req, res) => {
 };
 
 export const verifySession = async (req, res) => {
-  try {
-    const { session_id, type } = req.query;
+    try {
+        const { session_id, type } = req.query;
 
-    if (!session_id) {
-      return res.status(400).json({ valid: false });
+        if (!session_id) {
+            return res.status(400).json({ valid: false });
+        }
+
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+
+        if (!session) {
+            return res.json({ valid: false });
+        }
+
+        // ✅ Success page check
+        if (type === "success") {
+            if (session.payment_status === "paid") {
+                return res.json({ valid: true });
+            }
+            return res.json({ valid: false });
+        }
+
+        // ✅ Cancel page check
+        if (type === "cancel") {
+            return res.json({ valid: true });
+        }
+
+        return res.json({ valid: false });
+
+    } catch (error) {
+        return res.json({ valid: false });
     }
-
-    const session = await stripe.checkout.sessions.retrieve(session_id);
-
-    if (!session) {
-      return res.json({ valid: false });
-    }
-
-    // ✅ Success page check
-    if (type === "success") {
-      if (session.payment_status === "paid") {
-        return res.json({ valid: true });
-      }
-      return res.json({ valid: false });
-    }
-
-    // ✅ Cancel page check
-    if (type === "cancel") {
-      return res.json({ valid: true });
-    }
-
-    return res.json({ valid: false });
-
-  } catch (error) {
-    return res.json({ valid: false });
-  }
 };

@@ -2,6 +2,23 @@ import ChatbotSession from "../models/chatbotSessionModal.js";
 import Place from "../models/placeModel.js";
 import Booking from "../models/bookingModel.js";
 
+function getMinBookingDate() {
+
+    const now = new Date();
+
+    const cutoff = new Date();
+    cutoff.setHours(12, 0, 0, 0); // 12 PM cutoff
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (now >= cutoff) {
+        today.setDate(today.getDate() + 1);
+    }
+
+    return today;
+}
+
 export const handleChatbotStep = async (req, res) => {
     try {
         const { action, value } = req.body || {};
@@ -173,9 +190,6 @@ export const handleChatbotStep = async (req, res) => {
                 });
             }
 
-            // =============================
-            // PLACE SELECTION
-            // =============================
             case "PLACE_SELECTION": {
 
                 if (!value) {
@@ -216,9 +230,6 @@ export const handleChatbotStep = async (req, res) => {
                 });
             }
 
-            // =============================
-            // TICKET SELECTION
-            // =============================
             case "TICKET_SELECTION": {
 
                 if (!value || typeof value !== "object") {
@@ -232,11 +243,24 @@ export const handleChatbotStep = async (req, res) => {
                     });
                 }
 
+                // 🔥 ADD THIS LINE
                 const { visitDate, tickets } = value;
 
                 if (!visitDate || !tickets || !tickets.length) {
                     return res.status(400).json({
                         message: "Visit date and ticket details are required",
+                    });
+                }
+
+                // 🔥 DATE VALIDATION
+                const selectedVisitDate = new Date(visitDate);
+                selectedVisitDate.setHours(0, 0, 0, 0);
+
+                const minDate = getMinBookingDate();
+
+                if (selectedVisitDate < minDate) {
+                    return res.status(400).json({
+                        message: "Booking for today has closed at 12 PM. Please select tomorrow."
                     });
                 }
 
@@ -252,6 +276,7 @@ export const handleChatbotStep = async (req, res) => {
                 const calculatedTickets = [];
 
                 for (let t of tickets) {
+
                     let price = 0;
 
                     if (t.nationality === "Indian") {
@@ -267,15 +292,15 @@ export const handleChatbotStep = async (req, res) => {
                     }
 
                     calculatedTickets.push({
-                        visitorType: `${t.nationality} ${t.type}`,  
+                        visitorType: `${t.nationality} ${t.type}`,
                         quantity: t.quantity,
-                        price: price * t.quantity,                 
+                        price: price * t.quantity,
                     });
 
                     totalAmount += price * t.quantity;
                 }
 
-                session.visitDate = new Date(visitDate);
+                session.visitDate = selectedVisitDate;
                 session.tickets = calculatedTickets;
                 session.totalAmount = totalAmount;
                 session.currentStep = "CONFIRM_BOOKING";
@@ -316,6 +341,6 @@ export const handleChatbotStep = async (req, res) => {
 };
 
 export const deleteSession = async (req, res) => {
-  await ChatbotSession.deleteMany({ user: req.user.id });
-  res.json({ message: "Session cleared" });
+    await ChatbotSession.deleteMany({ user: req.user.id });
+    res.json({ message: "Session cleared" });
 };

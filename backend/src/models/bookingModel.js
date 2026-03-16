@@ -67,13 +67,45 @@ const bookingSchema = new mongoose.Schema(
       required: true
     },
 
+    paymentIntentId: {
+      type: String,
+      unique: true,
+      sparse: true
+    },
+
     paymentStatus: {
       type: String,
       enum: ["Pending", "Paid", "Failed"],
       default: "Pending"
-    }
+    },
+
+    bookingStatus: {
+      type: String,
+      enum: ["Booked", "Cancelled", "Completed"],
+      default: "Booked"
+    },
+
+    refundStatus: {
+      type: String,
+      enum: ["NotInitiated", "Pending", "Refunded"],
+      default: "NotInitiated"
+    },
+
+    cancelledAt: Date,
+    refundedAt: Date
   },
   { timestamps: true }
 );
+
+// 🔥 Fast refund query for admin
+bookingSchema.index({ refundStatus: 1 });
+
+// 🔥 Auto generate booking reference
+bookingSchema.pre("save", function (next) {
+  if (!this.bookingRef) {
+    this.bookingRef = "BK" + Date.now();
+  }
+  next();
+});
 
 export default mongoose.model("Booking", bookingSchema);
