@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="7 1 50 48" area-hidden="true" role="img" class="iconify iconidy--logos" width="32" height="32" preserveAspectRatio="xMidYMid" fill="none">
+  <!-- Antenna -->
+  <rect x="30.5" y="9" width="3" height="7" rx="1.5" fill="#FF2E93"/>
+  <circle cx="32" cy="6" r="4.5" fill="#FF2E93"/>
+
+  <!-- Main head / chat bubble -->
+  <path
+    d="M21 14H43C46.866 14 50 17.134 50 21V31C50 34.866 46.866 38 43 38H31L24 46V38H21C17.134 38 14 34.866 14 31V21C14 17.134 17.134 14 21 14Z"
+    stroke="#FF2E93"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- Left ear -->
+  <rect x="8" y="23" width="5" height="12" rx="2.5" fill="#FF2E93"/>
+
+  <!-- Right ear -->
+  <rect x="51" y="23" width="5" height="12" rx="2.5" fill="#FF2E93"/>
+
+  <!-- Eyes -->
+  <circle cx="25.5" cy="24.5" r="3.3" fill="#FF2E93"/>
+  <circle cx="38.5" cy="24.5" r="3.3" fill="#FF2E93"/>
+
+  <!-- Smile -->
+  <path
+    d="M27 31C28.3 32.5 29.9 33.3 32 33.3C34.1 33.3 35.7 32.5 37 31"
+    stroke="#FF2E93"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

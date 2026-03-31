@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" area-hidden="true" role="img" class="iconify iconidy--logos" width="32" height="32" preserveAspectRatio="xMidYMid" fill="none">
+  <!-- Background -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="#2450E6"/>
+
+  <!-- White bars -->
+  <rect x="13" y="38" width="3.5" height="12" rx="1.75" fill="#F5F7FF"/>
+  <rect x="24" y="34" width="3.5" height="16" rx="1.75" fill="#F5F7FF"/>
+  <rect x="35" y="29" width="3.5" height="21" rx="1.75" fill="#F5F7FF"/>
+  <rect x="46" y="23" width="3.5" height="27" rx="1.75" fill="#F5F7FF"/>
+
+  <!-- White growth arrow -->
+  <path
+    d="M16 37L25 28L33 31L44 20L41 17L50 15L48 24L45 21L34 33L26 30L18 39Z"
+    fill="#F5F7FF"
+  />
+</svg>
