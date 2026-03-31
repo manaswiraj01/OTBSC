@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { CiLocationOn, CiCalendar, CiClock2 } from "react-icons/ci";
+import { BASE_URL } from "../utils/constants";
 
 const EventDetail = () => {
   const { eventId } = useParams();
@@ -11,7 +12,7 @@ const EventDetail = () => {
     const fetchEvent = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4000/events/${eventId}`
+          BASE_URL + `/events/${eventId}`
         );
         setEvent(res.data.data);
       } catch (error) {

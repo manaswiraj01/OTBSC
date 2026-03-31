@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import EventCard from "../components/EventCard";
+import { BASE_URL } from "../utils/constants";
 
 const EventPage = () => {
   const [events, setEvents] = useState([]);
@@ -10,7 +11,7 @@ const EventPage = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:4000/events?limit=9"
+        BASE_URL + "/events?limit=9"
       );
       setEvents(res.data.data);
     } catch (error) {
