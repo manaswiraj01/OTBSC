@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom"
 import axios from "axios";
-import PlaceCard from "../components/placeCard.jsx";
+import PlaceCard from "../components/PlaceCard.jsx";
 import { BASE_URL } from "../utils/constants.js";
 const categories = ["Museum", "Wildlife", "Monument"];
 import { FiSearch } from "react-icons/fi";
