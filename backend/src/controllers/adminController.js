@@ -5,7 +5,7 @@ import Place from "../models/placeModel.js";
 import cloudinary from "../utils/cloudinary.js";
 import { validateLocation } from "../utils/validation.js";
 import { MAX_IMAGE_COUNT } from "../utils/constants.js";
-import { formatName, deleteImageFromCloudinary } from "../utils/cloudinaryHelpers.js";
+import { deleteImageFromCloudinary } from "../utils/cloudinaryHelpers.js";
 import Event from "../models/eventModel.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
