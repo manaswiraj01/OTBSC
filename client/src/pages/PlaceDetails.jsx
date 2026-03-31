@@ -13,7 +13,6 @@ import ContactSection from "../components/placeDetails/ContactSection.jsx";
 import ReviewSection from "../components/placeDetails/ReviewSection.jsx";
 import { BASE_URL } from "../utils/constants.js";
 import PlaceCard from "../components/PlaceCard.jsx";
-
 const PlaceDetails = () => {
   const { id } = useParams();
 const { userData } = useContext(Context);
