@@ -5,20 +5,22 @@ import Place from "../models/placeModel.js";
 export const getDashboardDataService = async () => {
     const today = new Date();
 
-    const sevenDaysAgo = new Date();
+    // 🔥 Last 7 days
+    const sevenDaysAgo = new Date(today);
     sevenDaysAgo.setDate(today.getDate() - 7);
     sevenDaysAgo.setHours(0, 0, 0, 0);
 
-    const twelveMonthsAgo = new Date();
-    twelveMonthsAgo.setMonth(today.getMonth() - 11);
-    twelveMonthsAgo.setDate(1);
+    // 🔥 Last 12 months start (SAFE FIX)
+    const twelveMonthsAgo = new Date(today);
+    twelveMonthsAgo.setDate(1); // pehle safe date
     twelveMonthsAgo.setHours(0, 0, 0, 0);
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 11);
 
     // 🔥 Today's range
-    const todayStart = new Date();
+    const todayStart = new Date(today);
     todayStart.setHours(0, 0, 0, 0);
 
-    const todayEnd = new Date();
+    const todayEnd = new Date(today);
     todayEnd.setHours(23, 59, 59, 999);
 
     // 🔥 Revenue logic:
@@ -297,6 +299,7 @@ export const getDashboardDataService = async () => {
 
     for (let i = 0; i < 12; i++) {
         const date = new Date(twelveMonthsAgo);
+        date.setDate(1); // 🔥 safe
         date.setMonth(twelveMonthsAgo.getMonth() + i);
 
         const year = date.getFullYear();
