@@ -1,16 +1,18 @@
+import { IndianRupee } from "lucide-react";
+
 const PricingTable = ({ pricing }) => {
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">
-        💰 Entry Pricing
+    <div className="px-2 md:px-0">
+      <h2 className="text-xl md:text-2xl font-semibold mb-4 flex items-center gap-2">
+        <IndianRupee size={20} /> Entry Pricing
       </h2>
 
       <div className="overflow-x-auto">
-        <table className="table table-zebra w-full">
+        <table className="table table-zebra w-full text-sm md:text-base">
           <thead>
             <tr>
               <th>Visitor Type</th>
-              <th>Price (₹)</th>
+              <th>Price</th>
             </tr>
           </thead>
           <tbody>

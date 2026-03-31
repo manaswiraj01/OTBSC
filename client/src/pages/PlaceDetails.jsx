@@ -10,7 +10,6 @@ import PlaceHeader from "../components/placeDetails/placeHeader.jsx";
 import PlaceDescription from "../components/placeDetails/PlaceDescription.jsx";
 import PricingTable from "../components/placeDetails/PricingTable.jsx";
 import ContactSection from "../components/placeDetails/ContactSection.jsx";
-import SuggestedPlaces from "../components/placeDetails/SuggestedPlaces.jsx";
 import ReviewSection from "../components/placeDetails/ReviewSection.jsx";
 import { BASE_URL } from "../utils/constants.js";
 import PlaceCard from "../components/placeCard.jsx";
@@ -55,7 +54,7 @@ const { userData } = useContext(Context);
 
   return (
     <div className="min-h-screen bg-base-200 p-6">
-      <div className="max-w-6xl mx-auto bg-base-100 shadow-xl rounded-2xl overflow-hidden">
+      <div className="max-w-6xl mx-auto bg-base-100 rounded-3xl overflow-hidden">
         <ImageCarousel images={place.photoUrls} />
 
         <div className="p-8">

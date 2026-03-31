@@ -1,10 +1,13 @@
+import { Info } from "lucide-react";
+
 const PlaceDescription = ({ description }) => {
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-2">
-        About this place
+    <div className="mb-6 px-2 md:px-0">
+      <h2 className="text-xl md:text-2xl font-semibold mb-3 flex items-center gap-2">
+        <Info size={20} /> About this place
       </h2>
-      <p className="text-gray-600 leading-relaxed">
+
+      <p className="text-sm md:text-base text-base-content/90 text-justify leading-relaxed">
         {description}
       </p>
     </div>
