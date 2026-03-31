@@ -18,6 +18,7 @@ import { useLocation } from "react-router-dom";
 import logo from "../assets/logo.png";
 
 import { Button } from "./ui/button";
+import UserAvatar from "./UserAvatar";
 
 
 const Navbar = ({ toggleTheme, setToggleTheme }) => {
@@ -59,9 +60,9 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
         <div
             className={`navbar fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out h-16 md:h-20 flex items-center bg-base-100 border-b-2 border-pink-500 ${scrolled ? 'shadow-md' : ''}`}
         >
-            <div className=" w-full  flex items-center  px-3 md:px-10 lg:px-16">
+            <div className=" w-full  flex items-center pr-2 pl-3 md:px-10 lg:px-16">
                 <div className="flex items-center ">
-                    <img onClick={() => navigate('/')} className="w-[190px] md:w-[180px] lg:w-[220px] size-40 cursor-pointer " src={logo} alt="logo" />
+                    <img onClick={() => navigate('/')} className="w-[190px] md:w-[180px] lg:w-[270px] h-[150px] lg:h-[170px] size-25 cursor-pointer pt-4 md:pt-3 lg:pt-3 " src={logo} alt="logo" />
                 </div>
                 {/* Navigation Links and Actions - take full remaining width, right align ul */}
                 <div className="flex-1 hidden lg:flex justify-end items-center gap-6 md:gap-10 lg:gap-12">
@@ -74,6 +75,9 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
                         </li>
                         <li className="text-lg">
                             <Link to="/explore" className={isActive("/explore") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>Explore</Link>
+                        </li>
+                        <li className="text-lg">
+                            <Link to="/events" className={isActive("/events") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>Events</Link>
                         </li>
                         <li className="text-lg">
                             <Link to="/help" className={isActive("/help") ? "border-b-2 border-pink-500 font-semibold" : `${toggleTheme === 'dark' ? 'text-white' : ''}`}>Help</Link>
@@ -91,10 +95,8 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
                                 :
                                 <div className="dropdown dropdown-end">
                                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                                        <div className="w-10 rounded-full">
-                                            <img
-                                                alt="user image"
-                                                src={user?.photoUrl} className="w-full h-full object-cover cursor-pointer" />
+                                        <div className="w-10 rounded-full cursor-pointer">
+                                            <UserAvatar user={user} size="w-10 h-10 text-sm"/>
                                         </div>
                                     </div>
                                     <ul
@@ -147,7 +149,7 @@ const Navbar = ({ toggleTheme, setToggleTheme }) => {
                                 <span className="text-lg">Theme</span></li>
                             {user && (
                                 <li className="flex gap-3 items-center">
-                                    <img src={user.photoUrl} alt="user profile image" className="w-8 h-8 rounded-full object-cover" />
+                                    <UserAvatar user={user} size="w-10 h-10 text-sm"/>
                                     <Link to="/profile/edit" onClick={() => setMenuOpen(false)}>Profile</Link>
                                 </li>
                             )}

@@ -1,7 +1,7 @@
 import express from "express";
 import nodemailer from "nodemailer";
 import multer from "multer";
-import {userAuth} from "../middlewares/auth.js";
+import {userAuth} from "../middlewares/userAuth.js";
 
 
 const router = express.Router();

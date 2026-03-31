@@ -5,6 +5,7 @@ import useUsers from "@/hooks/useUsers.js";
 import { useState } from "react";
 import DeleteUserModal from "@/components/DeleteUserModal";
 import Pagination from "@/components/Pagination";
+import PageLoader from "@/components/common/PageLoader.jsx";
 
 const UsersPage = () => {
 
@@ -31,8 +32,11 @@ const UsersPage = () => {
 
   if (!isLoaded) return null;
   if (!isSignedIn) return <p>Please sign in</p>;
-  if (loading) return <p>Loading users...</p>;
   if (error) return <p>{error}</p>;
+
+  if (loading) {
+    return <PageLoader text="Fetching users details..." />;
+  }
 
   return (
 
@@ -92,13 +96,7 @@ const UsersPage = () => {
           {/* TOP BAR */}
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4">
-
             <SearchForm />
-
-            <button className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium flex items-center gap-2">
-              + Create user
-            </button>
-
           </div>
 
 
@@ -216,21 +214,16 @@ const UsersPage = () => {
 
           </div>
 
+          <Pagination
+            page={page}
+            setPage={setPage}
+            limit={limit}
+            setLimit={setLimit}
+            total={total}
+          />
         </div>
 
       </div>
-
-
-      {/* PAGINATION */}
-
-      <Pagination
-        page={page}
-        setPage={setPage}
-        limit={limit}
-        setLimit={setLimit}
-        total={total}
-      />
-
 
       {/* DELETE MODAL */}
 

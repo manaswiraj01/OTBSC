@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL_ADMIN } from "@/lib/constants";
 import { useAuth } from "@clerk/clerk-react";
 import Pagination from "@/components/Pagination";
+import PageLoader from "@/components/common/PageLoader";
 
 const RefundHistory = () => {
 
@@ -21,6 +22,8 @@ const RefundHistory = () => {
         try {
 
             const token = await getToken();
+
+            console.log(token);
 
             const res = await axios.get(
                 `${BASE_URL_ADMIN}/refund-history?page=${page}&limit=${limit}`,
@@ -54,7 +57,9 @@ const RefundHistory = () => {
         fetchHistory();
     }, [page, limit]);
 
-    if (loading) return <p className="p-6">Loading history...</p>;
+    if (loading) {
+        return <PageLoader text="Fetching refund history..." />
+    }
 
     return (
 
@@ -84,8 +89,6 @@ const RefundHistory = () => {
                 </div>
 
             </div>
-
-            {/* ===== TABLE ===== */}
 
             <div className="max-w-7xl mx-auto">
 
@@ -126,11 +129,11 @@ const RefundHistory = () => {
                                     </td>
 
                                     <td className="px-6 py-4 text-zinc-300">
-                                        {r.placeId?.name}
+                                        {r.name}
                                     </td>
 
                                     <td className="px-6 py-4 text-zinc-300">
-                                        {r.placeId?.city}
+                                        {r.city}
                                     </td>
 
                                     <td className="px-6 py-4 text-zinc-300">
@@ -153,18 +156,17 @@ const RefundHistory = () => {
 
                     </table>
 
+                    <Pagination
+                        page={page}
+                        setPage={setPage}
+                        limit={limit}
+                        setLimit={setLimit}
+                        total={total}
+                    />
+
                 </div>
 
             </div>
-
-            <Pagination
-                page={page}
-                setPage={setPage}
-                limit={limit}
-                setLimit={setLimit}
-                total={total}
-            />
-
         </div>
 
     );

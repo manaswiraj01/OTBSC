@@ -1,5 +1,5 @@
 import express from "express";
-import { userAuth } from "../middlewares/auth.js";
+import { userAuth } from "../middlewares/userAuth.js";
 import { State, City } from "country-state-city";
 
 const locationRouter = express.Router();

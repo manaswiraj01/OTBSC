@@ -6,6 +6,7 @@ import { useAuth } from "@clerk/clerk-react";
 import toast from "react-hot-toast";
 import RefundApproveModal from "@/components/RefundApproveModal";
 import Pagination from "@/components/Pagination";
+import PageLoader from "@/components/common/PageLoader";
 
 const RefundRequests = () => {
 
@@ -108,7 +109,9 @@ const RefundRequests = () => {
         }
     };
 
-    if (loading) return <p className="p-6">Loading refunds...</p>;
+    if (loading) {
+        return <PageLoader text="Fetching refund requests..." />
+    }
 
     return (
 
@@ -234,17 +237,18 @@ const RefundRequests = () => {
 
                     </table>
 
+                    <Pagination
+                        page={page}
+                        setPage={setPage}
+                        limit={limit}
+                        setLimit={setLimit}
+                        total={total}
+                    />
                 </div>
 
             </div>
 
-            <Pagination
-                page={page}
-                setPage={setPage}
-                limit={limit}
-                setLimit={setLimit}
-                total={total}
-            />
+
 
             <RefundApproveModal
                 open={!!selectedRefund}

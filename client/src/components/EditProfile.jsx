@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/userSlice";
 import toast from "react-hot-toast";
+import UserAvatar from "./UserAvatar";
 
 const EditProfile = () => {
     const user = useSelector((store) => store.user);
@@ -18,10 +19,10 @@ const EditProfile = () => {
 
     useEffect(() => {
         if (user) {
-            setName(user.name);
-            setEmail(user.email);
-            setPhoneNo(user.phoneNo);
-            setPhotoUrl(user.photoUrl);
+            setName(user.name || "");
+            setEmail(user.email || "");
+            setPhoneNo(user.phoneNo || "");
+            setPhotoUrl(user.photoUrl || "");
         }
     }, [user]);
 
@@ -111,16 +112,13 @@ const EditProfile = () => {
                         </div>
                     </div>
 
-                    <div className="w-1/2 flex items-center justify-center">
-                        {user?.photoUrl && (
-                            <div className="flex flex-col items-center">
-                                <img
-                                    src={photoUrl}
-                                    alt="Profile Preview"
-                                    className="rounded-full border w-60 h-60 object-cover"
-                                />
-                            </div>
-                        )}
+                    <div className="w-1/2 flex items-center justify-center min-h-[300px]">
+                        <div className="flex flex-col items-center gap-4">
+                            <UserAvatar
+                                user={{ name, photoUrl }}
+                                size="w-70 h-70 text-9xl"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

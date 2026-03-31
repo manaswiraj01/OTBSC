@@ -1,6 +1,6 @@
 import express from "express";
 import Review from "../models/reviewModel.js";
-import { userAuth } from "../middlewares/auth.js";
+import { userAuth } from "../middlewares/userAuth.js";
 import { updatePlaceRating } from "../utils/ratingUtils.js";
 
 const reviewRouter = express.Router();

@@ -13,7 +13,7 @@ router.get("/refund-stats", adminAuth, getRefundStats);
 router.get("/refund-history", adminAuth, getRefundHistory);
 router.get("/booking-stats", adminAuth, getBookingStats);
 
-router.post("/add/place", adminAuth, addPlace);
+router.post("/add/place", adminAuth,  addPlace);
 router.get("/get/places", adminAuth, getPlacesAdmin);
 router.get("/get/place/:id", adminAuth, getPlaceAdmin);
 router.patch("/update/place/:id", adminAuth, updatePlace);

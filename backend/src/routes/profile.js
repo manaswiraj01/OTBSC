@@ -1,18 +1,9 @@
 import express from 'express'
-import { userAuth } from '../middlewares/auth.js';
-import { validateEditProfileData } from '../utils/validation.js';
-import cloudinary from '../utils/cloudinary.js';
+
 
 const profileRouter = express.Router();
 
-profileRouter.get("/profile/view", userAuth, async (req, res) => {
-  try {
-    const user = req.user;
-    res.send(user);
-  } catch (err) {
-    res.status(400).send("Cannot get user profile");
-  }
-})
+
 
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   try {

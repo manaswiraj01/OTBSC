@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes,Route, Navigate } from 'react-router-dom';
 import Body from './components/Body';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
@@ -9,7 +9,8 @@ import Loader from './components/Loader';
 import AboutUsPage from './pages/AboutUsPage';
 import FAQs from './pages/FAQs';
 import ExplorePage from './pages/ExplorePage';
-
+import EventPage from './pages/EventPage';
+import EventDetail from './pages/EventDetail';
 import { Context } from './context/Context';
 import PlaceDetails from './pages/PlaceDetails.jsx';
 import PaymentSuccess from './pages/PaymentSuccess';
@@ -21,6 +22,7 @@ import TermsOfUsePage from './pages/TermsOfUsePage';
 import ScrollToTop from "./components/ScrollToTop"
 import BookingsPage from './pages/BookingsPage';
 import HelpPage from './pages/HelpPage';
+import VerifyOtpPage from './pages/VerifyOtpPage';
 
 function App() {
   const { loading, setLoading, fetchUser, userData } = useContext(Context);
@@ -28,7 +30,8 @@ function App() {
   useEffect(() => {
     if (
       location.pathname === "/login" ||
-      location.pathname === "/signup"
+      location.pathname === "/signup" ||
+      location.pathname === "/verify-otp"
     ) {
       setLoading(false);
       return;
@@ -43,7 +46,14 @@ function App() {
   return (
     <div className="App">
       <ScrollToTop />
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            whiteSpace: "nowrap",
+            maxWidth: "700px",
+          },
+        }}
+      />
       <Routes>
         <Route path='/' element={<Body />}>
           <Route path='/' element={<HomePage />} />
@@ -52,6 +62,7 @@ function App() {
           <Route path='/help' element={<HelpPage />} />
           <Route path='/faqs' element={<FAQs />} />
           <Route path='/login' element={!userData ? <LoginPage /> : <Navigate to="/" />} />
+          <Route path='/verify-otp' element={<VerifyOtpPage />} />
           <Route path='/profile/edit' element={<ProfilePage />} />
           <Route path='/public/get/place/:id' element={<PlaceDetails />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
@@ -61,6 +72,10 @@ function App() {
           <Route path="/terms-of-use" element={<TermsOfUsePage />} />
           <Route path="/bookings" element={<BookingsPage />} />
           <Route path='/help' element={<HelpPage />} />
+          
+            <Route path='/events' element={<EventPage />} />
+            <Route path='/events/:eventId' element={<EventDetail />} />
+          
         </Route>
       </Routes>
     </div>
