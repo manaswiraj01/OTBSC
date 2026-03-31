@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL_ADMIN } from "@/lib/constants";
 import Pagination from "@/components/Pagination";
+import PageLoader from "@/components/common/PageLoader";
 
 const Bookings = () => {
 
@@ -15,6 +16,7 @@ const Bookings = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchBookings();
@@ -35,11 +37,17 @@ const Bookings = () => {
         totalBookings: res.data.totalBookings,
         totalRevenue: res.data.totalRevenue
       });
-
     } catch (error) {
       console.error(error);
     }
+    finally {
+      setLoading(false)
+    }
   };
+
+  if (loading) {
+    return <PageLoader text="Fetching booking details..." />
+  }
 
   return (
 
@@ -234,20 +242,16 @@ const Bookings = () => {
 
           </table>
 
+          <Pagination
+            page={page}
+            setPage={setPage}
+            limit={limit}
+            setLimit={setLimit}
+            total={total}
+          />
+
         </div>
-
       </div>
-
-      {/* ===== PAGINATION ===== */}
-
-      <Pagination
-        page={page}
-        setPage={setPage}
-        limit={limit}
-        setLimit={setLimit}
-        total={total}
-      />
-
     </div>
 
   );

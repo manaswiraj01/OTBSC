@@ -72,7 +72,7 @@ const BookingFilters = ({
                         setYearOpen(false);
                         setStatusOpen(false);
                     }}
-                    className="bg-secondary text-secondary-content px-4 py-2 rounded-md"
+                    className="bg-gradient-to-r from-[#4776E6] to-[#8E54E9]  text-white px-4 py-2 rounded-md"
                 >
                     {month === "all"
                         ? "All Months"
@@ -119,7 +119,7 @@ const BookingFilters = ({
                         setMonthOpen(false);
                         setStatusOpen(false);
                     }}
-                    className="bg-secondary text-secondary-content px-4 py-2 rounded-md"
+                    className="bg-gradient-to-r from-[#4776E6] to-[#8E54E9]  text-white px-4 py-2 rounded-md"
                 >
                     {year === "all" ? "All Years" : year}
                 </button>
@@ -164,7 +164,7 @@ const BookingFilters = ({
                         setMonthOpen(false);
                         setYearOpen(false);
                     }}
-                    className="bg-secondary text-secondary-content px-4 py-2 rounded-md"
+                    className="bg-gradient-to-r from-[#4776E6] to-[#8E54E9]  text-white px-4 py-2 rounded-md"
                 >
                     {status === "all"
                         ? "All Status"

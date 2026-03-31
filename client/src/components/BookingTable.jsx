@@ -9,7 +9,7 @@ const BookingTable = ({ bookings, openCancelModal }) => {
 
             <table className="w-full min-w-[700px] text-left table-fixed">
 
-                <thead className="bg-secondary text-secondary-content">
+                <thead className="bg-gradient-to-r from-[#7b61ff] to-[#ff4fa3] text-white">
 
                     <tr>
                         <th className="p-3 w-[45%]">Place</th>
@@ -47,9 +47,9 @@ const BookingTable = ({ bookings, openCancelModal }) => {
 
                                 <tr key={booking._id}>
 
-                                    <td className="p-3">{booking.placeId?.name}</td>
+                                    <td className="p-3">{booking.name}</td>
 
-                                    <td className="p-3">{booking.placeId?.city}</td>
+                                    <td className="p-3">{booking.city}</td>
 
                                     <td className="p-3">
                                         {format(new Date(booking.visitDate), "dd MMM yyyy")}

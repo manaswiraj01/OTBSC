@@ -114,9 +114,7 @@ export const handleChatbotStep = async (req, res) => {
             // CITY SELECTION
             // =============================
             case "CITY_SELECTION": {
-
                 if (!value) {
-
                     if (!session.selectedState) {
                         session.currentStep = "STATE_SELECTION";
                         await session.save();
@@ -143,13 +141,22 @@ export const handleChatbotStep = async (req, res) => {
                     });
                 }
 
+                // save city
                 session.selectedCity = value;
+                session.selectedCategory = null;
+                session.selectedPlace = null;
                 session.currentStep = "CATEGORY_SELECTION";
                 await session.save();
 
+                // 🔥 dynamic categories for selected city only
+                const categories = await Place.distinct("category", {
+                    state: session.selectedState,
+                    city: value,
+                });
+
                 return res.json({
-                    message: "Choose a category",
-                    options: ["Museum", "Wildlife", "Monument"],
+                    message: `Choose a category`,
+                    options: categories,
                     discardOption: true,
                     step: "CATEGORY_SELECTION",
                 });
@@ -159,29 +166,56 @@ export const handleChatbotStep = async (req, res) => {
             // CATEGORY SELECTION
             // =============================
             case "CATEGORY_SELECTION": {
-
                 if (!value) {
+                    const categories = await Place.distinct("category", {
+                        state: session.selectedState,
+                        city: session.selectedCity,
+                    });
+
                     return res.json({
                         message: "Choose a category",
-                        options: ["Museum", "Wildlife", "Monument"],
+                        options: categories,
                         discardOption: true,
                         step: "CATEGORY_SELECTION",
                     });
                 }
 
+                // save category
                 session.selectedCategory = value;
+                session.selectedPlace = null;
                 session.currentStep = "PLACE_SELECTION";
                 await session.save();
 
+                // fetch places only for selected city + category
                 const placeDocs = await Place.find({
                     state: session.selectedState,
                     city: session.selectedCity,
                     category: value,
                 }).select("_id name");
 
+                // ❌ if no places, don't go forward
+                if (!placeDocs.length) {
+                    const categories = await Place.distinct("category", {
+                        state: session.selectedState,
+                        city: session.selectedCity,
+                    });
+
+                    // reset step back
+                    session.selectedCategory = null;
+                    session.currentStep = "CATEGORY_SELECTION";
+                    await session.save();
+
+                    return res.json({
+                        message: `No places found under "${value}" in ${session.selectedCity}. Please choose another category.`,
+                        options: categories,
+                        discardOption: true,
+                        step: "CATEGORY_SELECTION",
+                    });
+                }
+
                 return res.json({
                     message: "Select a place",
-                    options: placeDocs.map(p => ({
+                    options: placeDocs.map((p) => ({
                         label: p.name,
                         value: p._id,
                     })),

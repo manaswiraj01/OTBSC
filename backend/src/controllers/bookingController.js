@@ -61,7 +61,7 @@ export const cancelBooking = async (req, res) => {
 export const getMyBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ userId: req.user._id })
-      .populate("placeId", "name category city state")
+      .populate("placeId"," name category city state")
       .sort({ createdAt: -1 });
 
     res.json(bookings);
