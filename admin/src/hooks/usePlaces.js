@@ -7,17 +7,20 @@ import {
   deletePlace
 } from "../api/place.api.js";
 
-const usePlaces = (page, limit, search, category) => {
+const usePlaces = (page, setPage, limit, search, category) => {
 
   const [places, setPlaces] = useState([]);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
-
+  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
   // FETCH PLACES
-  const fetchPlaces = async () => {
+  const fetchPlaces = async (isInitial = false) => {
     try {
-
-      setLoading(true);
+      if (isInitial) {
+        setLoading(true);   // only first page load
+      } else {
+        setFetching(true);  // search / filter / pagination
+      }
 
       const res = await getPlaces({
         page,
@@ -33,6 +36,7 @@ const usePlaces = (page, limit, search, category) => {
       console.error("Error fetching places:", error);
     } finally {
       setLoading(false);
+      setFetching(false);
     }
   };
 
@@ -60,42 +64,49 @@ const usePlaces = (page, limit, search, category) => {
     }
   };
 
-  // UPDATE PLACE
   const editPlace = async (id, data) => {
     try {
 
       await updatePlace(id, data);
-      fetchPlaces();
+
+      return { success: true };
 
     } catch (error) {
+
       console.error("Error updating place:", error);
+
+      return {
+        success: false,
+        error
+      };
     }
   };
 
   const handleDelete = async (place) => {
+    if (places.length === 1 && page > 1) {
+      setPage(prev => prev - 1);
+    }
     setPlaces(prev => prev.filter(p => p._id !== place._id));
+    setTotal(prev => prev - 1);
 
     try {
-
       await deletePlace(place._id);
-
     } catch (error) {
-
       console.error("Delete failed", error);
       fetchPlaces();
-
     }
 
   };
 
   useEffect(() => {
-    fetchPlaces();
+    fetchPlaces(places.length === 0);
   }, [page, limit, search, category]);
 
   return {
     places,
     total,
     loading,
+    fetching,
     fetchPlaces,
     fetchPlaceById,
     createPlace,

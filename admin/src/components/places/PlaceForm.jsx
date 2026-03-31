@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
 
 import { Input } from "@/components/ui/input"
@@ -18,46 +18,85 @@ import TimePicker from "@/components/places/TimePicker"
 import { State, City } from "country-state-city"
 
 import { toast } from "react-hot-toast"
+import { Spinner } from "../ui/spinner"
 
 const states = State.getStatesOfCountry("IN")
 
+const parseTime = (timeStr) => {
+
+    if (!timeStr) {
+        return { hour: "06", minute: "00", period: "AM" }
+    }
+
+    let [hour, minute] = timeStr.split(":")
+    hour = parseInt(hour)
+
+    let period = "AM"
+
+    if (hour >= 12) {
+        period = "PM"
+        if (hour > 12) hour -= 12
+    }
+
+    if (hour === 0) hour = 12
+
+    return {
+        hour: hour.toString().padStart(2, "0"),
+        minute,
+        period
+    }
+}
+
+const formatTimeTo24 = (timeObj) => {
+
+    let hour = parseInt(timeObj.hour)
+
+    if (timeObj.period === "PM" && hour !== 12) {
+        hour += 12
+    }
+
+    if (timeObj.period === "AM" && hour === 12) {
+        hour = 0
+    }
+
+    return `${hour.toString().padStart(2, "0")}:${timeObj.minute}`
+}
+
 const PlaceForm = ({ initialData = {}, mode = "add", onSubmit }) => {
+    const isEdit = mode === "edit"
 
     const [formData, setFormData] = useState({
 
-        name: initialData.name || "",
-        description: initialData.description || "",
-        category: initialData.category || "",
-        address: initialData.address || "",
-        state: initialData.state || "",
+        name: isEdit ? initialData.name || "" : "",
+        description: isEdit ? initialData.description || "" : "",
+        category: isEdit ? initialData.category || "" : "",
+        address: isEdit ? initialData.address || "" : "",
+        state: isEdit ? initialData.state || "" : "",
         stateCode: "",
-        city: initialData.city || "",
-        pincode: initialData.pincode || "",
-        contactEmail: initialData.contactEmail || "",
-        contactPhone: initialData.contactPhone || "",
+        city: isEdit ? initialData.city || "" : "",
+        pincode: isEdit ? initialData.pincode || "" : "",
+        contactEmail: isEdit ? initialData.contactEmail || "" : "",
+        contactPhone: isEdit ? initialData.contactPhone || "" : "",
 
-        openingTime: initialData.openingTime || {
-            hour: "06",
-            minute: "00",
-            period: "AM"
-        },
+        openingTime: isEdit
+            ? initialData.openingTime
+            : { hour: "", minute: "", period: "" },
 
-        closingTime: initialData.closingTime || {
-            hour: "06",
-            minute: "00",
-            period: "PM"
-        },
+        closingTime: isEdit
+            ? initialData.closingTime
+            : { hour: "", minute: "", period: "" },
 
         pricing: {
-            indianAdult: initialData?.pricing?.indianAdult || "",
-            indianStudent: initialData?.pricing?.indianStudent || "",
-            foreignerAdult: initialData?.pricing?.foreignerAdult || "",
-            foreignerStudent: initialData?.pricing?.foreignerStudent || ""
+            indianAdult: isEdit ? initialData?.pricing?.indianAdult || "" : "",
+            indianStudent: isEdit ? initialData?.pricing?.indianStudent || "" : "",
+            foreignerAdult: isEdit ? initialData?.pricing?.foreignerAdult || "" : "",
+            foreignerStudent: isEdit ? initialData?.pricing?.foreignerStudent || "" : ""
         }
 
     })
 
     const [images, setImages] = useState([])
+    const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -116,28 +155,68 @@ const PlaceForm = ({ initialData = {}, mode = "add", onSubmit }) => {
         accept: { "image/*": [] }
     })
 
-    const submitHandler = (e) => {
-        e.preventDefault()
+    const submitHandler = async (e) => {
+        e.preventDefault();
 
-        console.log("FORM DATA:", formData)
+        if (submitting) return; // 🔥 double click protection
 
-        console.log({
-            ...formData,
-            photoUrls: images.map(img => img.base64)
-        })
+        setSubmitting(true);
 
-        onSubmit({
-            ...formData,
-            pricing: {
-                indianAdult: Number(formData.pricing.indianAdult),
-                indianStudent: Number(formData.pricing.indianStudent),
-                foreignerAdult: Number(formData.pricing.foreignerAdult),
-                foreignerStudent: Number(formData.pricing.foreignerStudent)
-            },
-            photoUrls: images.map(img => img.base64)
-        })
+        try {
 
-    }
+            await onSubmit({
+                ...formData,
+                openingTime: formatTimeTo24(formData.openingTime),
+                closingTime: formatTimeTo24(formData.closingTime),
+                pricing: {
+                    indianAdult: Number(formData.pricing.indianAdult),
+                    indianStudent: Number(formData.pricing.indianStudent),
+                    foreignerAdult: Number(formData.pricing.foreignerAdult),
+                    foreignerStudent: Number(formData.pricing.foreignerStudent)
+                },
+                photoUrls: images.map(img => img.base64)
+            });
+
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    useEffect(() => {
+
+        if (mode === "edit" && initialData) {
+
+            // ✅ stateCode
+            if (initialData.state) {
+                const selectedState = states.find(s => s.name === initialData.state)
+
+                if (selectedState) {
+                    setFormData(prev => ({
+                        ...prev,
+                        stateCode: selectedState.isoCode
+                    }))
+                }
+            }
+
+            // ✅ images
+            if (initialData.photoUrls) {
+                const existingImages = initialData.photoUrls.map(url => ({
+                    preview: url,
+                    base64: url
+                }))
+
+                setImages(existingImages)
+            }
+
+            // 🔥🔥 TIME FIX (ADD THIS)
+            setFormData(prev => ({
+                ...prev,
+                openingTime: parseTime(initialData.openingTime),
+                closingTime: parseTime(initialData.closingTime)
+            }))
+        }
+
+    }, [initialData, mode])
 
     const cities = City.getCitiesOfState("IN", formData.stateCode)
 
@@ -328,17 +407,39 @@ const PlaceForm = ({ initialData = {}, mode = "add", onSubmit }) => {
 
             <div className="grid grid-cols-2 gap-4">
 
-                <Input name="indianAdult" value={formData.indianAdult} placeholder="Indian Adult" onChange={handlePricingChange} />
-                <Input name="indianStudent" value={formData.indianStudent} placeholder="Indian Student" onChange={handlePricingChange} />
+                <Input
+                    name="indianAdult"
+                    placeholder="Indian Adult"
+                    value={formData.pricing.indianAdult}
+                    onChange={handlePricingChange}
+                />
 
-                <Input name="foreignerAdult" value={formData.foreignerAdult} placeholder="Foreigner Adult" onChange={handlePricingChange} />
-                <Input name="foreignerStudent" value={formData.foreignerStudent} placeholder="Foreigner Student" onChange={handlePricingChange} />
+                <Input
+                    name="indianStudent"
+                    placeholder="Indian Student"
+                    value={formData.pricing.indianStudent}
+                    onChange={handlePricingChange}
+                />
+
+                <Input
+                    name="foreignerAdult"
+                    placeholder="Foreigner Adult"
+                    value={formData.pricing.foreignerAdult}
+                    onChange={handlePricingChange}
+                />
+
+                <Input
+                    name="foreignerStudent"
+                    placeholder="Foreigner Student"
+                    value={formData.pricing.foreignerStudent}
+                    onChange={handlePricingChange}
+                />
 
             </div>
 
             <div
                 {...getRootProps()}
-                className="border-2 border-dashed border-zinc-700 rounded-lg p-6 text-center cursor-pointer hover:border-indigo-500 transition"
+                className="border-2 border-dashed border-zinc-700 rounded-lg p-6 text-center cursor-pointer hover:border-neutral-300 transition"
             >
 
                 <input {...getInputProps()} />
@@ -381,8 +482,19 @@ const PlaceForm = ({ initialData = {}, mode = "add", onSubmit }) => {
 
             </div>
 
-            <Button className="w-full">
-                {mode === "edit" ? "Update Place" : "Create Place"}
+            <Button
+                type="submit"
+                disabled={submitting}
+                className="w-full"
+            >
+                {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                        <Spinner className="size-4" />
+                        {mode === "edit" ? "Updating..." : "Creating..."}
+                    </span>
+                ) : (
+                    mode === "edit" ? "Update Place" : "Create Place"
+                )}
             </Button>
 
         </form>

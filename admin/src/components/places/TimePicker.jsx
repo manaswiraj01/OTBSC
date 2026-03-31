@@ -17,6 +17,12 @@ const minutes = Array.from({ length: 60 }, (_, i) =>
 
 export default function TimePicker({ value, onChange }) {
 
+    const safeValue = {
+        hour: value?.hour || "",
+        minute: value?.minute || "",
+        period: value?.period || ""
+    }
+
     const handleChange = (part, val) => {
         onChange(part, val)
     }
@@ -26,17 +32,22 @@ export default function TimePicker({ value, onChange }) {
         <div className="flex items-center gap-2">
 
             {/* HOUR */}
-            <Select value={value?.hour} onValueChange={(v) => handleChange("hour", v)}>
+            <Select
+                value={safeValue.hour}
+                onValueChange={(v) => handleChange("hour", v)}
+            >
                 <SelectTrigger className="w-24 h-9 bg-zinc-900 border-zinc-700 text-sm">
                     <SelectValue placeholder="HH" />
                 </SelectTrigger>
 
                 <SelectContent
-                    className="bg-zinc-900 border-zinc-700 w-24! min-w-24 max-h-32 overflow-y-auto"
                     position="popper"
+                    side="bottom"
+                    align="start"
+                    className="bg-zinc-900 border-zinc-700 max-h-65 overflow-y-auto w-24"
                 >
                     {hours.map((h) => (
-                        <SelectItem key={h} value={h} className="text-sm py-1">
+                        <SelectItem key={h} value={h}>
                             {h}
                         </SelectItem>
                     ))}
@@ -46,17 +57,22 @@ export default function TimePicker({ value, onChange }) {
             <span className="text-zinc-400">:</span>
 
             {/* MINUTES */}
-            <Select value={value?.minute} onValueChange={(v) => handleChange("minute", v)}>
+            <Select
+                value={safeValue.minute}
+                onValueChange={(v) => handleChange("minute", v)}
+            >
                 <SelectTrigger className="w-24 h-9 bg-zinc-900 border-zinc-700 text-sm">
                     <SelectValue placeholder="MM" />
                 </SelectTrigger>
 
                 <SelectContent
-                    className="bg-zinc-900 border-zinc-700 w-24! min-w-24 max-h-32 overflow-y-auto"
                     position="popper"
+                    side="bottom"
+                    align="start"
+                    className="bg-zinc-900 border-zinc-700 max-h-65 overflow-y-auto w-24"
                 >
                     {minutes.map((m) => (
-                        <SelectItem key={m} value={m} className="text-sm py-1">
+                        <SelectItem key={m} value={m}>
                             {m}
                         </SelectItem>
                     ))}
@@ -64,19 +80,25 @@ export default function TimePicker({ value, onChange }) {
             </Select>
 
             {/* AM PM */}
-            <Select value={value?.period} onValueChange={(v) => handleChange("period", v)}>
+            <Select
+                value={safeValue.period}
+                onValueChange={(v) => handleChange("period", v)}
+            >
                 <SelectTrigger className="w-24 h-9 bg-zinc-900 border-zinc-700 text-sm">
                     <SelectValue placeholder="AM" />
                 </SelectTrigger>
 
-                <SelectContent position="popper" className="bg-zinc-900 border-zinc-700 w-24! min-w-24">
+                <SelectContent
+                    position="popper"
+                    side="bottom"
+                    align="start"
+                    className="bg-zinc-900 border-zinc-700 max-h-40 overflow-y-auto w-24"
+                >
                     <SelectItem value="AM">AM</SelectItem>
                     <SelectItem value="PM">PM</SelectItem>
                 </SelectContent>
             </Select>
 
         </div>
-
     )
-
 }

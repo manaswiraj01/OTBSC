@@ -4,27 +4,28 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 
 import PlaceForm from "@/components/places/PlaceForm"
+import { useState } from "react"
 
 const AddPlace = () => {
 
     const navigate = useNavigate()
+    const [submitting, setSubmitting] = useState(false);
 
     const handleSubmit = async (data) => {
 
         try {
-
             await addPlace(data)
-
+            if(submitting) return;
+            setSubmitting(true);
             toast.success("Place added successfully")
-
             navigate("/dashboard/places")
 
         } catch (err) {
-
-            console.log(err.response?.data)
-
             toast.error(err.response?.data?.message || "Failed to add place")
 
+        }
+        finally {
+            setSubmitting(false);
         }
 
     }

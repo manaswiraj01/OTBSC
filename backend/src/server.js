@@ -6,8 +6,7 @@ import { clerkMiddleware } from "@clerk/express";
 
 import { connectDB } from "./config/database.js";
 
-import authRouter from "./routes/auth.js";
-import profileRouter from "./routes/profile.js";
+import userRoutes from "./routes/userRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import placeRouter from "./routes/placeRoutes.js";
 import locationRouter from "./routes/locationRoutes.js";
@@ -18,9 +17,10 @@ import paymentRouter from "./routes/paymentRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import { stripeWebhook } from "./controllers/paymentController.js";
 import helpRouter from "./routes/helpRoute.js";
-
 import updateBookingStatus from "./cron/bookingStatusCron.js";
-
+import startEventCleanupJob from "./utils/eventCleanup.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
 
 
 dotenv.config();
@@ -48,13 +48,15 @@ app.use(cookieParser());
 
 app.use(clerkMiddleware());
 
-app.use("/", authRouter);
-app.use("/", profileRouter);
+app.use("/", userRoutes);
 app.use("/", placeRouter);
 app.use("/", locationRouter);
 app.use("/", reviewRouter);
+app.use("/events", eventRoutes);
 
 app.use("/admin", adminRouter);
+app.use("/admin", dashboardRoutes);
+app.use("/admin", eventRoutes);
 
 app.use("/chatbot", chatbotRouter);
 
@@ -69,6 +71,7 @@ connectDB()
     app.listen(4000, () => {
       console.log("Server is listening on port 4000");
       updateBookingStatus();
+      startEventCleanupJob();
     });
   })
   .catch((err) => {

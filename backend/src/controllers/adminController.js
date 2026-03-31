@@ -6,6 +6,7 @@ import cloudinary from "../utils/cloudinary.js";
 import { validateLocation } from "../utils/validation.js";
 import { MAX_IMAGE_COUNT } from "../utils/constants.js";
 import { formatName, deleteImageFromCloudinary } from "../utils/cloudinaryHelpers.js";
+import Event from "../models/eventModel.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -253,7 +254,6 @@ export const getRefundHistory = async (req, res) => {
 
 export const getBookingStats = async (req, res) => {
   try {
-
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
 
@@ -272,7 +272,12 @@ export const getBookingStats = async (req, res) => {
     const totalBookings = await Booking.countDocuments();
 
     const totalRevenueData = await Booking.aggregate([
-      { $match: { bookingStatus: "Completed" } },
+      {
+        $match: {
+          paymentStatus: "Paid",
+          refundStatus: { $ne: "Refunded" }
+        }
+      },
       {
         $group: {
           _id: null,
@@ -296,6 +301,8 @@ export const getBookingStats = async (req, res) => {
 };
 
 export const addPlace = async (req, res) => {
+  const uploadedPublicIds = [];
+
   try {
     const {
       name,
@@ -313,60 +320,57 @@ export const addPlace = async (req, res) => {
       pricing
     } = req.body;
 
+    const existingPlace = await Place.findOne({
+      name,
+      city,
+      state
+    });
+
+    if (existingPlace) {
+      return res.status(400).json({
+        success: false,
+        message: "Place already exists"
+      });
+    }
+
+    // ✅ location validation
     const locCheck = await validateLocation(state, city, pincode);
     if (!locCheck.success) {
       return res.status(400).json(locCheck);
     }
 
-    // time validation
-    if (!openingTime?.hour || !openingTime?.minute) {
+    // ✅ TIME VALIDATION
+    if (!openingTime || !/^\d{2}:\d{2}$/.test(openingTime)) {
       return res.status(400).json({
         success: false,
-        message: "Opening time incomplete"
+        message: "Opening time must be in HH:MM format"
       });
     }
 
-    if (!closingTime?.hour || !closingTime?.minute) {
+    if (!closingTime || !/^\d{2}:\d{2}$/.test(closingTime)) {
       return res.status(400).json({
         success: false,
-        message: "Closing time incomplete"
+        message: "Closing time must be in HH:MM format"
       });
     }
 
-    // convert to 24 hour format
-    const convertTo24Hour = (time) => {
-      let hour = parseInt(time.hour);
-
-      if (time.period === "PM" && hour !== 12) hour += 12;
-      if (time.period === "AM" && hour === 12) hour = 0;
-
-      const hourStr = hour.toString().padStart(2, "0");
-      const minStr = time.minute.padStart(2, "0");
-
-      return `${hourStr}:${minStr}`;
-    };
-
-    const openingTimeString = convertTo24Hour(openingTime);
-    const closingTimeString = convertTo24Hour(closingTime);
-
-    // logical check
-    if (openingTimeString >= closingTimeString) {
+    // ✅ logical check
+    if (openingTime >= closingTime) {
       return res.status(400).json({
         success: false,
         message: "Closing time must be after opening time"
       });
     }
 
-    const placeName = formatName(name);
     const uploadedUrls = [];
 
-    // upload images to cloudinary
+    // ✅ CLOUDINARY UPLOAD
     if (photoUrls && photoUrls.length > 0) {
       for (let i = 0; i < photoUrls.length; i++) {
-        const public_id = `places/${placeName}_${i + 1}`;
-
         const uploadRes = await cloudinary.uploader.upload(photoUrls[i], {
-          public_id,
+          folder: "places",
+          unique_filename: true,
+          overwrite: false,
           transformation: [
             { width: 1000, height: 750, crop: "fill", gravity: "auto" },
             { quality: "auto" },
@@ -375,9 +379,11 @@ export const addPlace = async (req, res) => {
         });
 
         uploadedUrls.push(uploadRes.secure_url);
+        uploadedPublicIds.push(uploadRes.public_id); // ✅ rollback ke liye save
       }
     }
 
+    // ✅ CREATE PLACE
     const newPlace = await Place.create({
       name,
       description,
@@ -388,9 +394,9 @@ export const addPlace = async (req, res) => {
       pincode,
       contactEmail,
       contactPhone,
-      openingTime: openingTimeString,
-      closingTime: closingTimeString,
-      photoUrls: uploadedUrls,
+      openingTime,
+      closingTime,
+      photoUrls: uploadedUrls.length ? uploadedUrls : [],
       pricing
     });
 
@@ -401,7 +407,18 @@ export const addPlace = async (req, res) => {
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("Add Place Error:", err);
+
+    if (uploadedPublicIds.length > 0) {
+      try {
+        for (const publicId of uploadedPublicIds) {
+          await cloudinary.uploader.destroy(publicId);
+        }
+        console.log("🗑️ Uploaded Cloudinary images rolled back successfully");
+      } catch (deleteErr) {
+        console.error("Cloudinary rollback failed:", deleteErr);
+      }
+    }
 
     res.status(500).json({
       success: false,
@@ -471,81 +488,168 @@ export const updatePlace = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
+
     const place = await Place.findById(id);
-    if (!place) return res.status(404).json({ success: false, message: "Place not found" });
+    if (!place) {
+      return res.status(404).json({
+        success: false,
+        message: "Place not found"
+      });
+    }
 
-    const { state, city, pincode, name, photoUrls } = updates;
+    const {
+      state,
+      city,
+      pincode,
+      openingTime,
+      closingTime,
+      photoUrls
+    } = updates;
 
+    // ✅ LOCATION VALIDATION
     if (state || city || pincode) {
-      if (!state || !city || !pincode)
-        return res.status(400).json({ success: false, message: "To update location, all of 'state', 'city', and 'pincode' must be provided." });
+      if (!state || !city || !pincode) {
+        return res.status(400).json({
+          success: false,
+          message: "To update location, provide state, city & pincode"
+        });
+      }
+
       const locCheck = await validateLocation(state, city, pincode);
       if (!locCheck.success) return res.status(400).json(locCheck);
     }
 
+    // ✅ TIME VALIDATION (same as add)
+    if (openingTime && !/^\d{2}:\d{2}$/.test(openingTime)) {
+      return res.status(400).json({
+        success: false,
+        message: "Opening time must be HH:MM"
+      });
+    }
+
+    if (closingTime && !/^\d{2}:\d{2}$/.test(closingTime)) {
+      return res.status(400).json({
+        success: false,
+        message: "Closing time must be HH:MM"
+      });
+    }
+
+    if (openingTime && closingTime && openingTime >= closingTime) {
+      return res.status(400).json({
+        success: false,
+        message: "Closing time must be after opening time"
+      });
+    }
+
     let finalUrls = place.photoUrls;
 
+    // ✅ IMAGE UPDATE (SAFE 🔥)
     if (photoUrls && photoUrls.length > 0) {
-      if (photoUrls.length > MAX_IMAGE_COUNT)
-        return res.status(400).json({ success: false, message: `Maximum ${MAX_IMAGE_COUNT} images allowed.` });
 
+      if (photoUrls.length > MAX_IMAGE_COUNT) {
+        return res.status(400).json({
+          success: false,
+          message: `Maximum ${MAX_IMAGE_COUNT} images allowed`
+        });
+      }
+
+      const uploadedUrls = [];
+
+      for (let i = 0; i < photoUrls.length; i++) {
+
+        const uploadRes = await cloudinary.uploader.upload(photoUrls[i], {
+          folder: "places",
+          unique_filename: true,
+          overwrite: false,
+          transformation: [
+            { width: 1000, height: 750, crop: "fill", gravity: "auto" },
+            { quality: "auto" },
+            { fetch_format: "auto" }
+          ]
+        });
+
+        uploadedUrls.push(uploadRes.secure_url);
+      }
+
+      // delete old images first
       for (const oldUrl of place.photoUrls) {
         await deleteImageFromCloudinary(oldUrl);
       }
 
-      const newName = formatName(name || place.name);
-      finalUrls = [];
-      for (let i = 0; i < photoUrls.length; i++) {
-        const public_id = `places/${newName}_${i + 1}`;
-        const uploadRes = await cloudinary.uploader.upload(photoUrls[i], {
-          public_id,
-          transformation: [
-            { width: 1000, height: 750, crop: "fill", gravity: "auto" },
-            { quality: "auto" },
-            { fetch_format: "auto" },
-          ],
-        });
-        finalUrls.push(uploadRes.secure_url);
-      }
+      // then replace with new
+      finalUrls = uploadedUrls;
     }
 
-    if (!photoUrls && name && name !== place.name) {
-      const oldName = formatName(place.name);
-      const newName = formatName(name);
-
-      const renamedUrls = [];
-      for (let i = 0; i < place.photoUrls.length; i++) {
-        const oldPublicId = `places/${oldName}_${i + 1}`;
-        const newPublicId = `places/${newName}_${i + 1}`;
-        const renamed = await cloudinary.uploader.rename(oldPublicId, newPublicId);
-        renamedUrls.push(renamed.secure_url);
+    // ✅ UPDATE DB
+    const updatedPlace = await Place.findByIdAndUpdate(
+      id,
+      {
+        ...updates,
+        photoUrls: finalUrls
+      },
+      {
+        new: true,
+        runValidators: true
       }
-      finalUrls = renamedUrls;
-    }
+    );
 
-    const updatedPlace = await Place.findByIdAndUpdate(id, { ...updates, photoUrls: finalUrls }, { new: true, runValidators: true });
+    res.status(200).json({
+      success: true,
+      message: "Place updated successfully",
+      data: updatedPlace
+    });
 
-    res.status(200).json({ success: true, message: "Place updated successfully", data: updatedPlace });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ success: false, message: "Server error while updating place" });
+    console.error("UPDATE PLACE ERROR:", err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating place"
+    });
   }
 };
 
 export const deletePlace = async (req, res) => {
   try {
     const { id } = req.params;
-    const place = await Place.findById(id);
-    if (!place) return res.status(404).json({ success: false, message: "Place not found" });
 
-    await Promise.all(
-      place.photoUrls.map((url) => deleteImageFromCloudinary(url))
-    );
+    const place = await Place.findById(id);
+    if (!place) {
+      return res.status(404).json({
+        success: false,
+        message: "Place not found"
+      });
+    }
+
+    if (place.photoUrls && place.photoUrls.length > 0) {
+      await Promise.allSettled(
+        place.photoUrls.map((url) => deleteImageFromCloudinary(url))
+      );
+    }
+
+    const events = await Event.find({ place: id });
+
+    for (const event of events) {
+      if (event.bannerImage) {
+        await deleteImageFromCloudinary(event.bannerImage);
+      }
+    }
+
+    await Event.deleteMany({ place: id });
 
     await Place.findByIdAndDelete(id);
-    res.status(200).json({ success: true, message: "Place deleted successfully" });
+
+    res.status(200).json({
+      success: true,
+      message: "Place and its events deleted successfully"
+    });
+
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ success: false, message: "Server error while deleting place" });
+    console.error("DELETE PLACE ERROR:", err);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting place"
+    });
   }
 };
