@@ -9,8 +9,7 @@ import Admin from "@/pages/Admin";
 import Dashboard from "@/pages/Dashboard";
 import Places from "@/pages/places/Places";
 import Bookings from "@/pages/Bookings";
-import Payments from "@/pages/Payments";
-import Events from "@/pages/Events";
+import Events from "@/pages/events/Events";
 import Users from "@/pages/Users";
 
 import ProtectedRoute from "@/components/home/ProtectedRoute";
@@ -18,6 +17,10 @@ import RefundRequests from "./pages/RefundRequests";
 import RefundHistory from "./pages/RefundHistory";
 import AddPlace from "./pages/places/AddPlace";
 import EditPlace from "./pages/places/EditPlace";
+import AddEvent from "./pages/events/AddEvent";
+import EditEvent from "./pages/events/EditEvent";
+import EventDetails from "./pages/events/EventDetails";
+import PlaceDetails from "./pages/places/PlaceDetails";
 
 function App() {
   return (
@@ -54,13 +57,18 @@ function App() {
           <Route path="places">
             <Route index element={<Places />} />
             <Route path="add" element={<AddPlace />} />
+            <Route path=":id" element={<PlaceDetails />} />
             <Route path="edit/:id" element={<EditPlace />} />
           </Route>
           <Route path="bookings" element={<Bookings />} />
-          <Route path="payments" element={<Payments />} />
           <Route path="refund-requests" element={<RefundRequests />} />
           <Route path="refund-history" element={<RefundHistory />} />
-          <Route path="events" element={<Events />} />
+          <Route path="events">
+            <Route index element={<Events />} />
+            <Route path="add" element={<AddEvent />} />
+            <Route path=":id" element={<EventDetails />} />
+            <Route path="edit/:id" element={<EditEvent />} />
+          </Route>
           <Route path="users" element={<Users />} />
 
           {/* <Route path="settings" element={<Settings />} /> */}

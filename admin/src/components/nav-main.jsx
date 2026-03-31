@@ -77,20 +77,6 @@ export function NavMain() {
           </SidebarMenuButton>
         </SidebarMenuItem>
 
-        {/* Payments */}
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            asChild
-            isActive={isNestedActive("/dashboard/payments")}
-            className={activeClass}
-          >
-            <Link to="/dashboard/payments">
-              <CreditCard className="size-4" />
-              <span>Payments</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-
         <SidebarMenuItem>
           <SidebarMenuButton
             asChild

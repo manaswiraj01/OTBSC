@@ -14,13 +14,13 @@ export default function Admin() {
         <SiteHeader />
 
         {/* Body */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 min-w-0"> {/* 🔥 FIX 1 */}
           {/* Sidebar */}
           <AppSidebar />
 
-          {/* MAIN CONTENT AREA (THIS WILL CHANGE) */}
-          <SidebarInset>
-            <div className="flex flex-1 flex-col gap-4 p-4">
+          {/* MAIN CONTENT */}
+          <SidebarInset className="min-w-0"> {/* 🔥 FIX 2 */}
+            <div className="flex flex-1 flex-col gap-4 p-4 min-w-0"> {/* 🔥 FIX 3 */}
               <Outlet />
             </div>
           </SidebarInset>

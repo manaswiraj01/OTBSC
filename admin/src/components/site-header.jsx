@@ -12,8 +12,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useSidebar } from "@/components/ui/sidebar"
-import ModeToggle from "@/components/mode-toggle"
-
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
@@ -26,25 +24,6 @@ export function SiteHeader() {
           <SidebarIcon />
         </Button>
         <Separator orientation="vertical" className="mr-2 h-4" />
-        <Breadcrumb className="hidden sm:block">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="#">
-                Building Your Application
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        {/* Search + Theme Toggle */}
-        <div className="flex items-center gap-2 w-full sm:ml-auto sm:w-auto">
-          <SearchForm />
-          <ModeToggle />
-        </div>
       </div>
     </header>
   );
