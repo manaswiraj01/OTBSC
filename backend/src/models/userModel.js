@@ -16,9 +16,9 @@ const userSchema = new Schema({
     },
     photoUrl: {
         type: String,
-        default: 'https://res.cloudinary.com/dpff5adhn/image/upload/v1753735617/esref-yasa-MOQ-CUuED8w-unsplash_x11c7w.jpg',
+        default: "",
         validate(value) {
-            if (!validator.isURL(value)) {
+            if (value && !validator.isURL(value)) {
                 throw new Error("Invalid Photo Url");
             }
         },
@@ -79,8 +79,8 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        validate(value){
-            if(!['male', 'female', 'other'].includes(value.toLowerCase())){
+        validate(value) {
+            if (!['male', 'female', 'other'].includes(value.toLowerCase())) {
                 throw new Error('Enter a valid gender type');
             }
         }
@@ -114,7 +114,7 @@ const userSchema = new Schema({
                 throw new Error('Invalid country name');
             }
         }
-    },
+    }
 },
     {
         timestamps: true

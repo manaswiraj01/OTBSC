@@ -19,47 +19,77 @@ const Login = () => {
   const [nationality, setNationality] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [error, setError] = useState("");
+  const [btnLoading, setBtnLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { fetchUser } = useContext(Context);
 
   const handleLogin = async () => {
-
     try {
+      setBtnLoading(true);
+      setError("");
 
       const res = await axios.post(
         BASE_URL + "/login",
         { email: emailId, password },
         { withCredentials: true }
       );
+
       dispatch(addUser(res.data));
-      toast.success(res?.data?.message);
-      fetchUser();
+      toast.success(res?.data?.message || "Login successful");
+
+      await fetchUser();
       return navigate("/");
     } catch (err) {
-      toast.error(err.message);
+      const msg = err?.response?.data?.message || err?.response?.data || err.message;
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setBtnLoading(false);
     }
   };
 
   const handleSignUp = async () => {
-
     try {
-      setError("")
+      setBtnLoading(true);
+      setError("");
+
       const res = await axios.post(
         BASE_URL + "/signup",
-        { name, email: emailId, password, phoneNo: countryCode + number, countryCode, gender, dob, nationality, country },
+        {
+          name,
+          email: emailId,
+          password,
+          phoneNo: countryCode + number,
+          countryCode,
+          gender,
+          dob,
+          nationality,
+          country,
+        },
         { withCredentials: true }
       );
-      dispatch(addUser(res.data.data));
-      toast.success(res?.data?.message);
-      return navigate("/profile");
+
+      toast.success(res?.data?.message || "OTP sent successfully");
+
+      const normalizedEmail = emailId.toLowerCase().trim();
+
+      // OTP page refresh survive kare
+      localStorage.setItem("pendingSignupEmail", normalizedEmail);
+      localStorage.setItem("otpCountdownStart", Date.now().toString());
+
+      return navigate("/verify-otp", {
+        state: { email: normalizedEmail },
+      });
     } catch (err) {
-      toast.error(err.message);
+      const msg = err?.response?.data?.message || err?.response?.data || err.message;
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setBtnLoading(false);
     }
   };
-
-
 
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">
@@ -115,9 +145,9 @@ const Login = () => {
                   className="select select-bordered w-full mb-2"
                 >
                   <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               <div>
@@ -177,8 +207,15 @@ const Login = () => {
             type="button"
             onClick={isLoginForm ? handleLogin : handleSignUp}
             className="btn btn-secondary w-full"
+            disabled={btnLoading}
           >
-            {isLoginForm ? "Login" : "Sign Up"}
+            {btnLoading
+              ? isLoginForm
+                ? "Logging in..."
+                : "Sending OTP..."
+              : isLoginForm
+              ? "Login"
+              : "Sign Up"}
           </button>
         </div>
 
@@ -186,7 +223,10 @@ const Login = () => {
           <p className="text-sm text-gray-600">
             {isLoginForm ? "New user?" : "Already have an account?"}{" "}
             <span
-              onClick={() => setIsLoginForm((prev) => !prev)}
+              onClick={() => {
+                setIsLoginForm((prev) => !prev);
+                setError("");
+              }}
               className="text-blue-600 hover:underline cursor-pointer font-medium"
             >
               {isLoginForm ? "Sign up here" : "Login here"}
