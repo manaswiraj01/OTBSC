@@ -61,14 +61,21 @@ const EditProfile = () => {
 
 
     return (
-        <div className="min-h-screen   flex items-center justify-center ">
-            <div className="w-1/2 border border-gray-400 rounded-2xl p-8">
+        <div className="min-h-screen flex items-center justify-center px-4 sm:px-5 md:px-6 py-20 sm:py-28 md:py-20">
 
-                {/* Centered Heading */}
-                <h2 className="text-3xl font-bold text-center mb-6">Edit Profile</h2>
+            {/* Container */}
+            <div className="w-full max-w-sm sm:max-w-2xl lg:max-w-3xl border border-gray-400 rounded-2xl p-4 sm:p-6 md:p-8">
 
-                <div className="flex">
-                    <div className="w-1/2 pr-4">
+                {/* Heading */}
+                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">
+                    Edit Profile
+                </h2>
+
+                {/* Grid Layout */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-6 items-center">
+
+                    {/* LEFT SIDE (Form) */}
+                    <div>
                         <div>
                             <label className="block text-sm py-2">Full Name</label>
                             <input
@@ -78,6 +85,7 @@ const EditProfile = () => {
                                 className="input input-bordered w-full mb-2"
                             />
                         </div>
+
                         <div>
                             <label className="block text-sm py-2">Email</label>
                             <input
@@ -87,6 +95,7 @@ const EditProfile = () => {
                                 className="input input-bordered w-full mb-2"
                             />
                         </div>
+
                         <div>
                             <label className="block text-sm py-2">Phone Number</label>
                             <input
@@ -96,6 +105,7 @@ const EditProfile = () => {
                                 className="input input-bordered w-full mb-2"
                             />
                         </div>
+
                         <div>
                             <label className="block text-sm py-2">Upload Photo</label>
                             <input
@@ -105,21 +115,25 @@ const EditProfile = () => {
                                 className="file-input file-input-bordered w-full mb-2"
                             />
                         </div>
-                        <div>
-                            <button onClick={saveProfile} className="btn btn-secondary w-full my-4 text-lg">
-                                Save Profile
-                            </button>
-                        </div>
+
+                        <button
+                            onClick={saveProfile}
+                            className="btn btn-secondary w-full mt-4 text-base sm:text-lg"
+                        >
+                            Save Profile
+                        </button>
                     </div>
 
-                    <div className="w-1/2 flex items-center justify-center min-h-[300px]">
-                        <div className="flex flex-col items-center gap-4">
+                    {/* RIGHT SIDE (Avatar) */}
+                    <div className="flex items-center justify-center">
+                        <div className="flex justify-center items-center w-full">
                             <UserAvatar
                                 user={{ name, photoUrl }}
-                                size="w-70 h-70 text-9xl"
+                                size="w-40 h-40 sm:w-54 sm:h-54 md:w-60 md:h-60 lg:w-70 lg:h-70 text-4xl sm:text-5xl md:text-6xl"
                             />
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

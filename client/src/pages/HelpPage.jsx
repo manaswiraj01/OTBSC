@@ -75,25 +75,25 @@ export default function HelpPage() {
 
 
   const selectStyle =
-    "select select-bordered bg-base-100  " +
+    "select select-bordered bg-base-100 placeholder:text-base-content/70 " +
     "hover:border-pink-500 focus:border-pink-500 " +
     "focus:outline-none focus:ring-0 focus:ring-transparent " +
     "focus:shadow-none transition-all duration-200 w-full rounded-xl";
 
   const inputStyle =
-    "input input-bordered bg-base-100  " +
+    "input input-bordered bg-base-100 placeholder:text-base-content/70  " +
     "hover:border-pink-500 focus:border-pink-500 " +
     "focus:outline-none focus:ring-0 focus:ring-transparent focus:shadow-none " +
     "transition-all duration-200 w-full rounded-xl";
 
   const textareaStyle =
-    "textarea textarea-bordered bg-base-100  " +
+    "textarea textarea-bordered bg-base-100 placeholder:text-base-content/70  " +
     "hover:border-pink-500 focus:border-pink-500 " +
     "focus:outline-none focus:ring-0 focus:ring-transparent focus:shadow-none " +
     "transition-all duration-200 w-full rounded-xl";
 
   const fileStyle =
-    "file-input file-input-bordered  bg-base-100 " +
+    "file-input file-input-bordered  bg-base-100 placeholder:text-base-content/70 " +
     "hover:border-pink-500 focus:border-pink-500 focus:outline-none " +
     "transition-all duration-200 w-full rounded-xl";
 
