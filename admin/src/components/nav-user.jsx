@@ -101,7 +101,7 @@ export function NavUser() {
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
-              onClick={() => signOut({ redirectUrl: "/" })}
+              onClick={() => signOut({ redirectUrl: "/admin/" })}
             >
               <LogOut />
               Log out
