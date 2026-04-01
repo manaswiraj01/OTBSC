@@ -11,7 +11,7 @@ export const generateReceipt = (booking, user) => {
                 fs.mkdirSync(receiptsDir, { recursive: true });
             }
 
-            const fileName = `receipt-${booking.bookingRef || booking._id}.pdf`;
+            const fileName = `receipt-${booking.bookingRef || booking._id}-${Date.now()}.pdf`;
             const filePath = path.join(receiptsDir, fileName);
 
             const doc = new PDFDocument({

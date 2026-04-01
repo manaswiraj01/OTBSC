@@ -2,6 +2,8 @@ import Stripe from "stripe";
 import Booking from "../models/bookingModel.js";
 import path from "path";
 import fs from "fs";
+import User from "../models/userModel.js";
+import { generateReceipt } from "../utils/generateReceipt.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -82,17 +84,25 @@ export const downloadReceipt = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
-    if (!booking.receiptFileName) {
-      return res.status(404).json({ message: "Receipt not available" });
-    }
+    const user = await User.findById(booking.userId);
 
-    const filePath = path.join(process.cwd(), "receipts", booking.receiptFileName);
+    // Har baar fresh receipt generate karo
+    const { fileName, filePath } = await generateReceipt(booking, user);
 
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ message: "Receipt file not found" });
-    }
+    // Optional: latest receipt filename DB me save kar do
+    booking.receiptFileName = fileName;
+    await booking.save();
 
-    return res.download(filePath);
+    return res.download(filePath, fileName, (err) => {
+      if (err) {
+        console.error("Download error:", err);
+      }
+
+      // Download ke baad temp receipt delete kar do
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    });
   } catch (error) {
     console.error("Download receipt error:", error);
     res.status(500).json({ message: error.message });
