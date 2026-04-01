@@ -1,6 +1,5 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { SignedOut, SignUpButton, SignInButton } from "@clerk/clerk-react"
+import React from "react";
+import { SignedOut, SignUpButton, SignInButton } from "@clerk/clerk-react";
 
 const Navbar = () => {
   return (
@@ -15,18 +14,26 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1">
           <li>
             <SignedOut>
-              <SignInButton className="text-foreground hover:bg-muted rounded-md btn btn-primary" />
+              <SignInButton forceRedirectUrl="/dashboard" mode="modal">
+                <button className="text-foreground hover:bg-muted rounded-md btn btn-primary">
+                  Sign In
+                </button>
+              </SignInButton>
             </SignedOut>
           </li>
           <li>
             <SignedOut>
-              <SignUpButton className="text-foreground hover:bg-muted rounded-md btn btn-primary ml-2" />
+              <SignUpButton forceRedirectUrl="/dashboard" mode="modal">
+                <button className="text-foreground hover:bg-muted rounded-md btn btn-primary ml-2">
+                  Sign Up
+                </button>
+              </SignUpButton>
             </SignedOut>
           </li>
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
