@@ -12,10 +12,11 @@ const Navbar = () => {
 
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
+          
           <li>
             <SignedOut>
-              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-                <button className="text-foreground hover:bg-muted rounded-md btn btn-primary">
+              <SignInButton mode="modal">
+                <button className="btn btn-primary">
                   Sign In
                 </button>
               </SignInButton>
@@ -24,13 +25,14 @@ const Navbar = () => {
 
           <li>
             <SignedOut>
-              <SignUpButton mode="modal" forceRedirectUrl="/dashboard">
-                <button className="text-foreground hover:bg-muted rounded-md btn btn-primary ml-2">
+              <SignUpButton mode="modal">
+                <button className="btn btn-primary ml-2">
                   Sign Up
                 </button>
               </SignUpButton>
             </SignedOut>
           </li>
+
         </ul>
       </div>
     </div>
