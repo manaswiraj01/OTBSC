@@ -49,7 +49,7 @@ const Home = () => {
           {/* 🔐 BUTTONS */}
           <SignedOut>
             <div className="flex gap-4">
-
+ 
               <SignInButton>
                 <button className="px-7 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 hover:scale-110 transition duration-300 shadow-xl">
                   Sign In
