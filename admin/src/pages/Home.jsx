@@ -50,13 +50,13 @@ const Home = () => {
           <SignedOut>
             <div className="flex gap-4">
 
-              <SignInButton mode="modal">
+              <SignInButton>
                 <button className="px-7 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 hover:scale-110 transition duration-300 shadow-xl">
                   Sign In
                 </button>
               </SignInButton>
 
-              <SignUpButton mode="modal">
+              <SignUpButton>
                 <button className="px-7 py-3 rounded-xl border border-gray-600 hover:bg-gray-800 hover:scale-110 transition duration-300">
                   Sign Up
                 </button>
