@@ -24,7 +24,7 @@ import PlaceDetails from "./pages/places/PlaceDetails";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
       <Toaster />
       <Routes>
         {/* Home route */}
@@ -70,8 +70,6 @@ function App() {
             <Route path="edit/:id" element={<EditEvent />} />
           </Route>
           <Route path="users" element={<Users />} />
-
-          {/* <Route path="settings" element={<Settings />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>

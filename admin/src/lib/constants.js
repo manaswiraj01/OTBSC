@@ -1,1 +1,1 @@
-export const BASE_URL_ADMIN = "http://localhost:4000/admin";
+export const BASE_URL_ADMIN = "/api/admin";
