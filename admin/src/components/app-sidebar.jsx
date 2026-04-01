@@ -35,7 +35,7 @@ export function AppSidebar({
               <a href="#">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden">
                   <img
-                    src="/tabimg.svg"
+                    src={`${import.meta.env.BASE_URL}tabimg.svg`}
                     alt="Admin Logo"
                     className="h-full w-full object-contain"
                   />
