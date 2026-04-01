@@ -13,11 +13,14 @@ if (!PUBLISHABLE_KEY) {
 }
 
 createRoot(document.getElementById('root')).render(
-  <ThemeProvider defaultTheme="system">
-    <StrictMode>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ baseTheme: dark }}>
+  <StrictMode>
+    <ThemeProvider>
+      <ClerkProvider
+        publishableKey={PUBLISHABLE_KEY}
+        appearance={{ baseTheme: dark }}
+      >
         <App />
       </ClerkProvider>
-    </StrictMode>
-  </ThemeProvider>
+    </ThemeProvider>
+  </StrictMode>
 )
