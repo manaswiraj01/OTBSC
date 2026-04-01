@@ -24,7 +24,7 @@ import PlaceDetails from "./pages/places/PlaceDetails";
 
 function App() {
   return (
-    <BrowserRouter basename="/admin/">
+    <BrowserRouter basename="/admin">
       <Toaster />
       <Routes>
         {/* Home route */}
@@ -37,7 +37,7 @@ function App() {
               </SignedOut>
 
               <SignedIn>
-                <Navigate to="dashboard" replace />
+                <Navigate to="/dashboard" replace />
               </SignedIn>
             </>
           }

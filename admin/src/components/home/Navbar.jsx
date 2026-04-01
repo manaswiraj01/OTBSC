@@ -1,5 +1,6 @@
-import React from "react";
-import { SignedOut, SignUpButton, SignInButton } from "@clerk/clerk-react";
+import React from "react"
+import { Link } from "react-router-dom"
+import { SignedOut, SignUpButton, SignInButton } from "@clerk/clerk-react"
 
 const Navbar = () => {
   return (
@@ -12,31 +13,20 @@ const Navbar = () => {
 
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
-          
           <li>
             <SignedOut>
-              <SignInButton mode="modal">
-                <button className="btn btn-primary">
-                  Sign In
-                </button>
-              </SignInButton>
+              <SignInButton className="text-foreground hover:bg-muted rounded-md btn btn-primary" />
             </SignedOut>
           </li>
-
           <li>
             <SignedOut>
-              <SignUpButton mode="modal">
-                <button className="btn btn-primary ml-2">
-                  Sign Up
-                </button>
-              </SignUpButton>
+              <SignUpButton className="text-foreground hover:bg-muted rounded-md btn btn-primary ml-2" />
             </SignedOut>
           </li>
-
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
