@@ -8,20 +8,20 @@ const ticketDetailSchema = new mongoose.Schema(
         "Indian Student",
         "Indian Adult",
         "Foreigner Student",
-        "Foreigner Adult"
+        "Foreigner Adult",
       ],
-      required: true
+      required: true,
     },
     numberOfTickets: {
       type: Number,
       min: 1,
-      required: true
+      required: true,
     },
     totalPrice: {
       type: Number,
       min: 0,
-      required: true
-    }
+      required: true,
+    },
   },
   { _id: false }
 );
@@ -30,19 +30,19 @@ const bookingSchema = new mongoose.Schema(
   {
     bookingRef: {
       type: String,
-      unique: true
+      unique: true,
     },
 
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
 
     placeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Place",
-      required: true
+      required: true,
     },
 
     name: String,
@@ -54,53 +54,78 @@ const bookingSchema = new mongoose.Schema(
 
     visitDate: {
       type: Date,
-      required: true
+      required: true,
     },
 
     ticketDetails: {
       type: [ticketDetailSchema],
-      required: true
+      required: true,
     },
 
     totalAmount: {
       type: Number,
-      required: true
+      required: true,
     },
 
     paymentIntentId: {
       type: String,
       unique: true,
-      sparse: true
+      sparse: true,
     },
 
     paymentStatus: {
       type: String,
       enum: ["Pending", "Paid", "Failed"],
-      default: "Pending"
+      default: "Pending",
     },
 
     bookingStatus: {
       type: String,
       enum: ["Booked", "Cancelled", "Completed"],
-      default: "Booked"
+      default: "Booked",
     },
 
     refundStatus: {
       type: String,
       enum: ["NotInitiated", "Pending", "Refunded"],
-      default: "NotInitiated"
+      default: "NotInitiated",
+    },
+
+    //Receipt feature fields
+    receiptFileName: {
+      type: String,
+      default: "",
+    },
+
+    receiptGeneratedAt: {
+      type: Date,
+      default: null,
+    },
+
+    // Optional future use
+    emailSent: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailSentAt: {
+      type: Date,
+      default: null,
     },
 
     cancelledAt: Date,
-    refundedAt: Date
+    refundedAt: Date,
   },
   { timestamps: true }
 );
 
-// 🔥 Fast refund query for admin
+//Fast refund query for admin
 bookingSchema.index({ refundStatus: 1 });
 
-// 🔥 Auto generate booking reference
+//Optional helpful indexes
+bookingSchema.index({ userId: 1, createdAt: -1 });
+
+//Auto generate booking reference
 bookingSchema.pre("save", function (next) {
   if (!this.bookingRef) {
     this.bookingRef = "BK" + Date.now();

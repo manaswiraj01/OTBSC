@@ -1,40 +1,35 @@
 import React from "react";
 import { format } from "date-fns";
+import { Download } from "lucide-react";
 
-const BookingTable = ({ bookings, openCancelModal }) => {
-
+const BookingTable = ({
+    bookings,
+    openCancelModal,
+    downloadReceiptHandler,
+}) => {
     return (
-
         <div className="overflow-x-auto rounded-xl shadow">
-
-            <table className="w-full min-w-[700px] text-left table-fixed">
-
+            <table className="w-full min-w-[900px] text-left table-fixed">
                 <thead className="bg-gradient-to-r from-[#7b61ff] to-[#ff4fa3] text-white">
-
                     <tr>
-                        <th className="p-3 w-[45%]">Place</th>
-                        <th className="p-3 w-[15%]">City</th>
-                        <th className="p-3 w-[15%]">Visit Date</th>
+                        <th className="p-3 w-[32%]">Place</th>
+                        <th className="p-3 w-[14%]">City</th>
+                        <th className="p-3 w-[14%]">Visit Date</th>
                         <th className="p-3 w-[10%]">Amount</th>
+                        <th className="p-3 w-[15%]">Receipt</th>
                         <th className="p-3 w-[15%]">Status</th>
                     </tr>
-
                 </thead>
 
                 <tbody>
-
                     {bookings.length === 0 ? (
-
                         <tr>
-                            <td colSpan="5" className="text-center py-8 text-base-content/70">
+                            <td colSpan="6" className="text-center py-8 text-base-content/70">
                                 No bookings found for the selected filters.
                             </td>
                         </tr>
-
                     ) : (
-
                         bookings.map((booking) => {
-
                             const now = new Date();
                             const visitDate = new Date(booking.visitDate);
 
@@ -43,10 +38,10 @@ const BookingTable = ({ bookings, openCancelModal }) => {
                                 booking.bookingStatus === "Booked" &&
                                 booking.refundStatus === "NotInitiated";
 
+                            const hasReceipt = !!booking.receiptFileName;
+
                             return (
-
-                                <tr key={booking._id}>
-
+                                <tr key={booking._id} className="border-b border-white/5">
                                     <td className="p-3">{booking.name}</td>
 
                                     <td className="p-3">{booking.city}</td>
@@ -57,53 +52,50 @@ const BookingTable = ({ bookings, openCancelModal }) => {
 
                                     <td className="p-3">₹{booking.totalAmount}</td>
 
+                                    {/* 🔥 Receipt Column */}
+                                    <td className="p-3">
+                                        <button
+                                            onClick={() =>
+                                                hasReceipt && downloadReceiptHandler(booking._id)
+                                            }
+                                            disabled={!hasReceipt}
+                                            className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200
+  ${hasReceipt
+                                                    ? "border border-[#7b61ff] text-[#7b61ff] hover:bg-[#7b61ff] hover:text-white cursor-pointer"
+                                                    : "border border-gray-600 text-gray-500 cursor-not-allowed opacity-60"
+                                                }`}
+                                        >
+                                            <Download size={15} />
+                                            Receipt
+                                        </button>
+                                    </td>
+
                                     <td className="p-3 whitespace-nowrap">
-
                                         {canCancel ? (
-
                                             <button
                                                 onClick={() => openCancelModal(booking)}
                                                 className="px-3 py-1 text-xs sm:text-sm bg-red-700 text-white rounded-md cursor-pointer"
                                             >
                                                 Cancel Booking
                                             </button>
-
                                         ) : booking.refundStatus === "Pending" ? (
-
-                                            <span className="">Refund Pending</span>
-
+                                            <span>Refund Pending</span>
                                         ) : booking.refundStatus === "Refunded" ? (
-
-                                            <span className="">Refunded</span>
-
+                                            <span>Refunded</span>
                                         ) : booking.bookingStatus === "Completed" ? (
-
-                                            <span className="">Completed</span>
-
+                                            <span>Completed</span>
                                         ) : (
-
-                                            <span className="">Cancellation Closed</span>
-
+                                            <span>Cancellation Closed</span>
                                         )}
-
                                     </td>
-
                                 </tr>
-
                             );
-
                         })
-
                     )}
-
                 </tbody>
-
             </table>
-
         </div>
-
     );
-
 };
 
 export default BookingTable;
