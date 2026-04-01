@@ -14,16 +14,17 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1">
           <li>
             <SignedOut>
-              <SignInButton forceRedirectUrl="/dashboard" mode="modal">
+              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                 <button className="text-foreground hover:bg-muted rounded-md btn btn-primary">
                   Sign In
                 </button>
               </SignInButton>
             </SignedOut>
           </li>
+
           <li>
             <SignedOut>
-              <SignUpButton forceRedirectUrl="/dashboard" mode="modal">
+              <SignUpButton mode="modal" forceRedirectUrl="/dashboard">
                 <button className="text-foreground hover:bg-muted rounded-md btn btn-primary ml-2">
                   Sign Up
                 </button>

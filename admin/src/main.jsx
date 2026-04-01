@@ -14,13 +14,7 @@ if (!PUBLISHABLE_KEY) {
 createRoot(document.getElementById("root")).render(
   <ThemeProvider defaultTheme="system">
     <StrictMode>
-      <ClerkProvider
-        publishableKey={PUBLISHABLE_KEY}
-        signInUrl="/admin"
-        signUpUrl="/admin"
-        afterSignInUrl="/admin/dashboard"
-        afterSignUpUrl="/admin/dashboard"
-      >
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
         <App />
       </ClerkProvider>
     </StrictMode>
