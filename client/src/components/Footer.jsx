@@ -86,11 +86,11 @@ const Footer = () => {
 
             {/* No Redirect – Simple Text */}
             <p className="hover:text-pink-500 transition-colors duration-200 cursor-default">
-              support@otbsc.com
+              quickbook.support@gmail.com
             </p>
 
             <p className="hover:text-pink-500 transition-colors duration-200 cursor-default">
-              +91 98765 43210
+              +91 7597892322
             </p>
           </div>
 
