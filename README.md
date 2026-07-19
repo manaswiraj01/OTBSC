@@ -4,6 +4,15 @@
 
 ---
 
+## 🌐 Live Demo
+
+### 👤 User Portal
+🔗 **Live Website:** https://quick-book.in/
+
+### 🛠️ Admin Dashboard
+🔗 **Admin Panel:** https://quick-book.in/admin/
+
+
 ## 📌 Problem Statement
 
 In many cities and tourist destinations, people often face difficulties discovering nearby events and booking tickets efficiently. Traditional ticket booking methods usually involve long physical queues, manual processes, and scattered event information, resulting in a poor user experience and operational challenges for event organizers.
