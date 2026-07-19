@@ -1,6 +1,6 @@
 # 🚀 QuickBook
 
-> **A full-stack MERN Event Booking Platform that simplifies event discovery, online ticket booking, and event management through dedicated User and Admin dashboards.**
+> **A full-stack MERN Ticket Booking Platform that simplifies event discovery, online ticket booking, and event management through dedicated User and Admin dashboards.**
 
 ---
 
