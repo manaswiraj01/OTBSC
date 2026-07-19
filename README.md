@@ -4,35 +4,38 @@
 
 ---
 
-# 📌 Problem Statement
+## 📌 Problem Statement
 
-In many cities and tourist destinations, people struggle to discover nearby events and book tickets efficiently. Event organizers often manage bookings manually or through multiple disconnected systems, resulting in poor user experience and administrative overhead.
+In many cities and tourist destinations, people often face difficulties discovering nearby events and booking tickets efficiently. Traditional ticket booking methods usually involve long physical queues, manual processes, and scattered event information, resulting in a poor user experience and operational challenges for event organizers.
 
 Some common challenges include:
 
-- Difficulty discovering events happening at different places.
-- Manual booking and ticket management.
-- No centralized platform for users and organizers.
-- Complicated booking and refund handling.
-- Lack of an efficient admin system to manage places, events, and users.
+- 🎫 Long physical queues at ticket counters, leading to wasted time and inconvenience.
+- 📍 Difficulty discovering events happening at different places.
+- 📝 Manual booking and ticket management.
+- 🌐 No centralized platform for users and organizers.
+- 💰 Complicated booking and refund handling.
+- 🛠️ Lack of an efficient admin system to manage places, events, bookings, and users.
 
 ---
 
-# 💡 Solution
+## 💡 Solution
 
-QuickBook solves these challenges by providing a centralized web platform where users can easily explore places, discover upcoming events, and book tickets online. At the same time, administrators get a powerful dashboard to manage the complete event lifecycle.
+QuickBook addresses these challenges by providing a centralized web platform where users can discover places, explore upcoming events, and book tickets online without waiting in long queues. Event organizers and administrators can efficiently manage the complete event lifecycle through a dedicated admin dashboard.
 
 The platform provides:
 
 - 🎟️ Online Event Booking
+- 🚶 Queue-Free Digital Ticket Booking
 - 📍 Place-Based Event Discovery
-- 👤 Secure User Authentication
+- 🔐 Secure Authentication with Clerk
 - 📅 Event Management System
 - 📖 Booking History
 - 💰 Refund Request Management
 - 🛠️ Dedicated Admin Dashboard
-- 📱 Responsive User Interface
-
+- ☁️ Secure Cloud Deployment on AWS with Nginx
+- 🔒 HTTPS Enabled using GoDaddy Domain & SSL
+- 📱 Fully Responsive User Interface
 ---
 
 # ✨ Features
