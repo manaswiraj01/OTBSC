@@ -34,7 +34,7 @@ QuickBook addresses these challenges by providing a centralized web platform whe
 
 The platform provides:
 
-- 🎟️ Online Event Booking
+- 🎟️ Online Event Booking using chatbot 
 - 🚶 Queue-Free Digital Ticket Booking
 - 📍 Place-Based Event Discovery
 - 🔐 Secure Authentication with Clerk
@@ -45,6 +45,8 @@ The platform provides:
 - ☁️ Secure Cloud Deployment on AWS with Nginx
 - 🔒 HTTPS Enabled using GoDaddy Domain & SSL
 - 📱 Fully Responsive User Interface
+- Email service for refund management
+- Secured payment gateway
 ---
 
 # ✨ Features
