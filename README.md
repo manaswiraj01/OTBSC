@@ -47,6 +47,10 @@ The platform provides:
 - 📱 Fully Responsive User Interface
 - Email service for refund management
 - Secured payment gateway
+- Event Search
+- Advanced Filters
+- Analytics Dashboard
+- nodemailer for email service
 ---
 
 # ✨ Features
@@ -117,35 +121,6 @@ The platform provides:
 
 ---
 
-# 📂 Project Structure
-
-```
-QuickBook/
-│
-├── admin/
-│   ├── src
-│   ├── public
-│   └── package.json
-│
-├── client/
-│   ├── src
-│   ├── public
-│   └── package.json
-│
-├── backend/
-│   ├── controllers
-│   ├── routes
-│   ├── models
-│   ├── middleware
-│   ├── config
-│   ├── utils
-│   └── package.json
-│
-└── README.md
-```
-
----
-
 # ⚙️ Installation
 
 ## Clone Repository
@@ -210,39 +185,6 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
 
----
-
-# 📸 Screenshots
-
-Add screenshots of the following pages.
-
-- Home Page
-- Places Page
-- Events Page
-- Event Details
-- Booking Page
-- User Dashboard
-- Admin Dashboard
-- Event Management
-- Refund Management
-
----
-
-# 🚀 Future Enhancements
-
-- Online Payment Gateway
-- QR Code Tickets
-- Email Notifications
-- Event Search
-- Advanced Filters
-- Wishlist
-- Event Reviews
-- Event Ratings
-- Analytics Dashboard
-- Mobile Application
-
----
-
 # 🌟 Project Highlights
 
 - Full Stack MERN Application
@@ -261,12 +203,7 @@ Add screenshots of the following pages.
 # 👨‍💻 Author
 
 **Manaswi Raj Sharma**
-
-GitHub:
-https://github.com/manaswiraj01
-
-LinkedIn:
-(Add your LinkedIn profile)
+**Khushi Bhati**
 
 ---
 
