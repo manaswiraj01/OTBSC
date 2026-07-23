@@ -1,6 +1,6 @@
 # 🚀 QuickBook
 
-> **A full-stack MERN Ticket Booking using Chatbot Platform that simplifies event discovery, online ticket booking, and event management through dedicated User and Admin dashboards.**
+> **A full-stack Chatbot based Ticket Booking Platform that simplifies event discovery, online ticket booking, and event management through dedicated User and Admin dashboards.**
 
 ---
 
@@ -202,11 +202,5 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 # 👨‍💻 Author
 
-**Manaswi Raj Sharma**
+**Manaswi Raj Sharma**,
 **Khushi Bhati**
-
----
-
-# 📄 License
-
-This project is developed for educational, learning, and portfolio purposes.
