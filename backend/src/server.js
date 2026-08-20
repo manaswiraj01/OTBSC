@@ -26,62 +26,97 @@ dotenv.config();
 
 const app = express();
 
+// ================= CORS =================
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  process.env.CLIENT_URL,
+  process.env.ADMIN_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://16.16.192.97"
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin
+      // (Postman, server-to-server requests, etc.)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
+
+// ================= WEBHOOKS =================
 
 // Clerk webhook
 app.use("/clerk/webhook", clerkWebhook);
 
 // Stripe webhook
+// IMPORTANT: express.raw() must come before express.json()
 app.post(
   "/payment/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
-// Body parser
+// ================= BODY PARSERS =================
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
-// ===== PUBLIC ROUTES =====
+// ================= PUBLIC ROUTES =================
+
 app.use("/", userRoutes);
 app.use("/", placeRouter);
 app.use("/", locationRouter);
 app.use("/", reviewRouter);
+
 app.use("/events", eventRoutes);
 app.use("/chatbot", chatbotRouter);
 app.use("/payment", paymentRouter);
 app.use("/bookings", bookingRouter);
 app.use("/help", helpRouter);
 
-// ===== PROTECTED ADMIN ROUTES =====
+// ================= PROTECTED ADMIN ROUTES =================
+
 app.use("/admin", clerkMiddleware(), adminRouter);
 app.use("/admin", clerkMiddleware(), dashboardRoutes);
 app.use("/admin", clerkMiddleware(), eventRoutes);
 
-// Optional root test
+// ================= HEALTH CHECK =================
+
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.status(200).json({
+    success: true,
+    message: "QuickBook API is running...",
+  });
 });
+
+// ================= SERVER =================
+
+const PORT = process.env.PORT || 4000;
 
 connectDB()
   .then(() => {
     console.log("Connected to database successfully");
-    app.listen(4000, () => {
-      console.log("Server is listening on port 4000");
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server is listening on port ${PORT}`);
+
       updateBookingStatus();
       startEventCleanupJob();
     });
   })
   .catch((err) => {
-    console.error("Error connecting to database", err);
+    console.error("Error connecting to database:", err);
+    process.exit(1);
   });
