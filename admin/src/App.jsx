@@ -48,6 +48,8 @@ function App() {
           }
         />
 
+        <Route path="/admin" element={<Navigate to="/" replace />} />
+
         {/* Admin layout (protected) */}
         <Route
           path="/dashboard"
