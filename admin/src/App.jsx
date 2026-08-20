@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useAuth } from "@clerk/clerk-react";
 import { Toaster } from "react-hot-toast";
 
 import Home from "@/pages/Home";
@@ -22,7 +22,12 @@ import EditEvent from "./pages/events/EditEvent";
 import EventDetails from "./pages/events/EventDetails";
 import PlaceDetails from "./pages/places/PlaceDetails";
 
+import { setTokenFunction } from "@/api/axiosInstance";
+
 function App() {
+  const { getToken } = useAuth();
+
+  setTokenFunction(getToken);
   return (
     <BrowserRouter>
       <Toaster />
