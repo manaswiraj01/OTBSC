@@ -14,10 +14,6 @@ const RefundHistory = () => {
 
   const fetchHistory = async () => {
     try {
-      const token = await getToken();
-
-      console.log(token);
-
       const res = await api.get(`/refund-history?page=${page}&limit=${limit}`);
 
       setRefunds(res.data.refunds || []);
