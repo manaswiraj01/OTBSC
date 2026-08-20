@@ -24,7 +24,7 @@ import PlaceDetails from "./pages/places/PlaceDetails";
 
 function App() {
   return (
-    <BrowserRouter basename="/admin">
+    <BrowserRouter>
       <Toaster />
       <Routes>
         {/* Home route */}
