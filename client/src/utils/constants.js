@@ -1,2 +1,2 @@
 export const BASE_URL =
-  "https://otbsc.onrender.com/" || "http://localhost:4000";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
