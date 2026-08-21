@@ -41,9 +41,6 @@ export default function HelpPage() {
 
       await axios.post(`${BASE_URL}/help`, data, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       });
 
       setShowAlert(true);
@@ -62,7 +59,6 @@ export default function HelpPage() {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
     } catch (error) {
       console.error(error);
       alert("Failed to send request");
@@ -72,7 +68,6 @@ export default function HelpPage() {
   };
 
   // 🎨 DaisyUI Clean Style
-
 
   const selectStyle =
     "select select-bordered bg-base-100 placeholder:text-base-content/70 " +
@@ -99,7 +94,6 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center p-4 sm:p-6">
-
       {/* Small Floating Alert */}
       {showAlert && (
         <div className="fixed inset-0 flex items-start justify-center pt-6 z-50">
@@ -110,7 +104,6 @@ export default function HelpPage() {
       )}
 
       <div className="w-full max-w-5xl bg-base-100 shadow-2xl rounded-2xl p-6 sm:p-10">
-
         <h1 className="text-3xl font-bold text-center mb-8">
           Need <span className="text-pink-500">Help?</span>
         </h1>
@@ -119,7 +112,6 @@ export default function HelpPage() {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-
           {/* Mobile */}
           <div className="form-control">
             <label className="label">
@@ -136,8 +128,8 @@ export default function HelpPage() {
             />
           </div>
 
-          {/* Booking ID */ }
-           <div className="form-control">
+          {/* Booking ID */}
+          <div className="form-control">
             <label className="label">
               <span className="label-text">Booking ID</span>
             </label>
@@ -247,7 +239,6 @@ export default function HelpPage() {
               {loading ? "Submitting..." : "Submit Request"}
             </button>
           </div>
-
         </form>
       </div>
     </div>

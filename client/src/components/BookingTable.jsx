@@ -24,7 +24,10 @@ const BookingTable = ({
                 <tbody>
                     {bookings.length === 0 ? (
                         <tr>
-                            <td colSpan="6" className="text-center py-8 text-base-content/70">
+                            <td
+                                colSpan="6"
+                                className="text-center py-8 text-base-content/70"
+                            >
                                 No bookings found for the selected filters.
                             </td>
                         </tr>
@@ -38,32 +41,39 @@ const BookingTable = ({
                                 booking.bookingStatus === "Booked" &&
                                 booking.refundStatus === "NotInitiated";
 
-                            const hasReceipt = !!booking.receiptFileName;
-
                             return (
-                                <tr key={booking._id} className="border-b border-white/5">
-                                    <td className="p-3">{booking.name}</td>
-
-                                    <td className="p-3">{booking.city}</td>
-
+                                <tr
+                                    key={booking._id}
+                                    className="border-b border-white/5"
+                                >
                                     <td className="p-3">
-                                        {format(new Date(booking.visitDate), "dd MMM yyyy")}
+                                        {booking.name}
                                     </td>
 
-                                    <td className="p-3">₹{booking.totalAmount}</td>
+                                    <td className="p-3">
+                                        {booking.city}
+                                    </td>
 
-                                    {/* 🔥 Receipt Column */}
+                                    <td className="p-3">
+                                        {format(
+                                            new Date(booking.visitDate),
+                                            "dd MMM yyyy"
+                                        )}
+                                    </td>
+
+                                    <td className="p-3">
+                                        ₹{booking.totalAmount}
+                                    </td>
+
+                                    {/* Receipt Column */}
                                     <td className="p-3">
                                         <button
                                             onClick={() =>
-                                                hasReceipt && downloadReceiptHandler(booking._id)
+                                                downloadReceiptHandler(
+                                                    booking._id
+                                                )
                                             }
-                                            disabled={!hasReceipt}
-                                            className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200
-  ${hasReceipt
-                                                    ? "border border-[#7b61ff] text-[#7b61ff] hover:bg-[#7b61ff] hover:text-white cursor-pointer"
-                                                    : "border border-gray-600 text-gray-500 cursor-not-allowed opacity-60"
-                                                }`}
+                                            className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 border border-[#7b61ff] text-[#7b61ff] hover:bg-[#7b61ff] hover:text-white cursor-pointer"
                                         >
                                             <Download size={15} />
                                             Receipt
@@ -73,19 +83,28 @@ const BookingTable = ({
                                     <td className="p-3 whitespace-nowrap">
                                         {canCancel ? (
                                             <button
-                                                onClick={() => openCancelModal(booking)}
+                                                onClick={() =>
+                                                    openCancelModal(booking)
+                                                }
                                                 className="px-3 py-1 text-xs sm:text-sm bg-red-700 text-white rounded-md cursor-pointer"
                                             >
                                                 Cancel Booking
                                             </button>
-                                        ) : booking.refundStatus === "Pending" ? (
-                                            <span>Refund Pending</span>
-                                        ) : booking.refundStatus === "Refunded" ? (
+                                        ) : booking.refundStatus ===
+                                          "Pending" ? (
+                                            <span>
+                                                Refund Pending
+                                            </span>
+                                        ) : booking.refundStatus ===
+                                          "Refunded" ? (
                                             <span>Refunded</span>
-                                        ) : booking.bookingStatus === "Completed" ? (
+                                        ) : booking.bookingStatus ===
+                                          "Completed" ? (
                                             <span>Completed</span>
                                         ) : (
-                                            <span>Cancellation Closed</span>
+                                            <span>
+                                                Cancellation Closed
+                                            </span>
                                         )}
                                     </td>
                                 </tr>

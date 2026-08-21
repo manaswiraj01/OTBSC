@@ -1,89 +1,155 @@
 import express from "express";
-import nodemailer from "nodemailer";
 import multer from "multer";
-import {userAuth} from "../middlewares/userAuth.js";
-
+import { Resend } from "resend";
+import { userAuth } from "../middlewares/userAuth.js";
 
 const router = express.Router();
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Multer Configuration
 const upload = multer({
-  storage: multer.memoryStorage(), // store in RAM (for email attachment)
-  limits: {
-    fileSize: 25 * 1024 * 1024, // 25MB max
-  },
-  fileFilter: (req, file, cb) => {
-    if (
-      file.mimetype.startsWith("image/") ||
-      file.mimetype.startsWith("video/")
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only images and videos are allowed"), false);
-    }
-  },
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 25 * 1024 * 1024, // 25MB
+    },
+    fileFilter: (req, file, cb) => {
+        if (
+            file.mimetype.startsWith("image/") ||
+            file.mimetype.startsWith("video/")
+        ) {
+            cb(null, true);
+        } else {
+            cb(new Error("Only images and videos are allowed"), false);
+        }
+    },
 });
 
 router.post(
-  "/",
-  userAuth,
-  upload.single("attachment"), // 👈 MUST match frontend name
-  async (req, res) => {
-    try {
-      console.log("File received:", req.file); // debug
+    "/",
+    userAuth,
+    upload.single("attachment"),
 
-      const {
-        mobile,
-        bookingId,
-        issueType,
-        subIssueType,
-        title,
-        description,
-      } = req.body;
+    async (req, res) => {
+        try {
+            console.log("========== HELP REQUEST ==========");
+            console.log("Body:", req.body);
+            console.log("File:", req.file ? req.file.originalname : "No file");
+            console.log("User:", req.user?.email);
 
-      const userName = req.user.name;
-      const userEmail = req.user.email;
+            const {
+                mobile,
+                bookingId,
+                issueType,
+                subIssueType,
+                title,
+                description,
+            } = req.body;
 
-      // Nodemailer config here
+            const userName = req.user?.name || "User";
+            const userEmail = req.user?.email;
 
-      await transporter.sendMail({
-        from: `"OTBSC Support" <${process.env.EMAIL_USER}>`,
-        to: process.env.SUPPORT_EMAIL,
-        replyTo: userEmail,
-        subject: `Help Request - ${issueType}`,
-        html: `
-          <h3>New Help Request</h3>
-          <p><strong>Name:</strong> ${userName}</p>
-          <p><strong>Email:</strong> ${userEmail}</p>
-          <p><strong>Mobile:</strong> ${mobile}</p>
-          <p><strong>Booking ID:</strong> ${bookingId}</p>
-          <p><strong>Description:</strong></p>
-          <p>${description}</p>
-        `,
-        attachments: req.file
-          ? [
-              {
-                filename: req.file.originalname,
-                content: req.file.buffer,
-              },
-            ]
-          : [],
-      });
+            if (!userEmail) {
+                return res.status(400).json({
+                    message: "User email not found",
+                });
+            }
 
-      res.status(200).json({ message: "Success" });
+            const attachments = req.file
+                ? [
+                      {
+                          filename: req.file.originalname,
+                          content: req.file.buffer,
+                      },
+                  ]
+                : [];
 
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: error.message });
+            const { data, error } = await resend.emails.send({
+                from: "QuickBook Support <onboarding@quick-book.in>",
+                to: [process.env.SUPPORT_EMAIL],
+                replyTo: userEmail,
+
+                subject: `Help Request - ${issueType}`,
+
+                html: `
+                    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+
+                        <h2>New Help Request</h2>
+
+                        <p>
+                            <strong>Name:</strong>
+                            ${userName}
+                        </p>
+
+                        <p>
+                            <strong>Email:</strong>
+                            ${userEmail}
+                        </p>
+
+                        <p>
+                            <strong>Mobile:</strong>
+                            ${mobile || "Not provided"}
+                        </p>
+
+                        <p>
+                            <strong>Booking ID:</strong>
+                            ${bookingId || "Not provided"}
+                        </p>
+
+                        <p>
+                            <strong>Issue Type:</strong>
+                            ${issueType}
+                        </p>
+
+                        <p>
+                            <strong>Sub Issue:</strong>
+                            ${subIssueType}
+                        </p>
+
+                        <p>
+                            <strong>Title:</strong>
+                            ${title}
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                        </p>
+
+                        <p>
+                            ${description}
+                        </p>
+
+                    </div>
+                `,
+
+                attachments,
+            });
+
+            if (error) {
+                console.error("Resend Help Email Error:", error);
+
+                return res.status(500).json({
+                    message: "Failed to send help request",
+                    error: error.message,
+                });
+            }
+
+            console.log("Help email sent successfully:", data);
+
+            return res.status(200).json({
+                success: true,
+                message: "Help request sent successfully",
+            });
+
+        } catch (error) {
+            console.error("Help Request Error:", error);
+
+            return res.status(500).json({
+                success: false,
+                message: error.message,
+            });
+        }
     }
-  }
 );
 
 export default router;
