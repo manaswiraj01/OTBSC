@@ -71,54 +71,64 @@ export const deleteUser = async (req, res) => {
 };
 
 export const getPendingRefundRequests = async (req, res) => {
-  try {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
-    const skip = (page - 1) * limit;
+        const total = await Booking.countDocuments({
+            refundStatus: "Pending"
+        });
 
-    // total pending refunds count
-    const total = await Booking.countDocuments({
-      refundStatus: "Pending"
-    });
+        const bookings = await Booking.find({
+            refundStatus: "Pending"
+        })
+            .populate("userId", "name email")
+            .populate("placeId", "name city state")
+            .sort({ cancelledAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
-    // paginated pending bookings
-    const bookings = await Booking.find({
-      refundStatus: "Pending"
-    })
-      .populate("userId", "name email")
-      .populate("placeId", "name city state")
-      .sort({ cancelledAt: -1 })
-      .skip(skip)
-      .limit(limit);
+        console.log("========== REFUND REQUEST DEBUG ==========");
+        console.log("Database:", Booking.db.name);
+        console.log("Pending Count:", total);
+        console.log(
+            "Pending Bookings:",
+            bookings.map((b) => ({
+                id: b._id,
+                refundStatus: b.refundStatus,
+                bookingStatus: b.bookingStatus,
+                amount: b.totalAmount
+            }))
+        );
+        console.log("==========================================");
 
-    // 🔥 total pending refund amount
-    const pendingAmount = await Booking.aggregate([
-      { $match: { refundStatus: "Pending" } },
-      {
-        $group: {
-          _id: null,
-          totalAmount: { $sum: "$totalAmount" }
-        }
-      }
-    ]);
+        const pendingAmount = await Booking.aggregate([
+            { $match: { refundStatus: "Pending" } },
+            {
+                $group: {
+                    _id: null,
+                    totalAmount: { $sum: "$totalAmount" }
+                }
+            }
+        ]);
 
-    res.json({
-      bookings,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
-      pendingAmount: pendingAmount[0]?.totalAmount || 0
-    });
+        res.json({
+            bookings,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit),
+            pendingAmount: pendingAmount[0]?.totalAmount || 0
+        });
 
-  } catch (error) {
+    } catch (error) {
+        console.error("Refund request error:", error);
 
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
+        res.status(500).json({
+            message: error.message
+        });
+    }
 };
 
 export const approveRefund = async (req, res) => {

@@ -72,7 +72,18 @@ export const getDashboardDataService = async () => {
         ]),
 
         // Pending refund requests
-        Booking.countDocuments({ refundStatus: "Pending" }),
+        (async () => {
+            const count = await Booking.countDocuments({
+                refundStatus: "Pending"
+            });
+
+            console.log("========== DASHBOARD REFUND DEBUG ==========");
+            console.log("Database:", Booking.db.name);
+            console.log("Pending Refunds:", count);
+            console.log("============================================");
+
+            return count;
+        })(),
 
         // Recent bookings
         Booking.find()
