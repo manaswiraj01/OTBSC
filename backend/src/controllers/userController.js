@@ -250,10 +250,12 @@ export const loginUser = async (req, res) => {
         const isPasswordValid = await user.validatePassword(password);
         if (isPasswordValid) {
             const token = await user.getJWT();
-            res.cookie('token', token, {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-            })
-                .json({ message: "Login successfully", user });
+           res.cookie("token", token, {
+  expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+}).json({ message: "Login successfully", user });
         }
         else {
             throw new Error("Invalid Credentials");
@@ -266,9 +268,12 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = (req, res) => {
     try {
-        res.cookie('token', '', {
-            expires: new Date(Date.now()),
-        }).send("User logout successfully");
+       res.cookie("token", "", {
+  expires: new Date(0),
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+}).send("User logout successfully");
     }
     catch (err) {
         res.status(404).send(err.message);
