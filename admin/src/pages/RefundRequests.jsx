@@ -23,40 +23,34 @@ const RefundRequests = () => {
     const [selectedRefund, setSelectedRefund] = useState(null);
 
     const fetchRefunds = async () => {
+    try {
+        const token = await getToken();
 
-        try {
-
-            const token = await getToken();
-
-            const res = await axios.get(
-                `${BASE_URL_ADMIN}/refunds?page=${page}&limit=${limit}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+        const res = await axios.get(
+            `${BASE_URL_ADMIN}/refunds?page=${page}&limit=${limit}&_=${Date.now()}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Cache-Control": "no-cache"
                 }
-            );
+            }
+        );
 
-            const bookings = res.data.bookings || [];
+        const bookings = res.data.bookings || [];
 
-            setRefunds(bookings);
+        setRefunds(bookings);
+        setTotal(res.data.total || 0);
+        setAmountToRefund(res.data.pendingAmount || 0);
 
-            // pagination total
-            setTotal(res.data.total || 0);
-
-            setAmountToRefund(res.data.pendingAmount || 0);
-
-        } catch (error) {
-
-            console.error(error);
-
-        } finally {
-
-            setLoading(false);
-
-        }
-
-    };
+    } catch (error) {
+        console.error("Fetch Refunds Error:", error);
+        toast.error(
+            error.response?.data?.message || "Failed to fetch refund requests"
+        );
+    } finally {
+        setLoading(false);
+    }
+};
 
     useEffect(() => {
         setLoading(true);
