@@ -1,1 +1,1 @@
-export const BASE_URL_ADMIN = "/admin";
+export const BASE_URL_ADMIN = "https://server-quickbook.onrender.com/admin";
