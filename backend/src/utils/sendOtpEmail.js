@@ -6,7 +6,7 @@ const sendOtpEmail = async (toEmail, otp) => {
   try {
     const { data, error } = await resend.emails.send({
       from: "QuickBook <onboarding@resend.dev>",
-      to: [kb2426111@gmail.com],
+      to: ["kb2426111@gmail.com"],
       subject: "QuickBook Email Verification OTP",
 
       html: `
